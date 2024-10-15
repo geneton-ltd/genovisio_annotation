@@ -333,6 +333,3 @@ class Annotation:
                 high_risk_genes.append({"gene_name": gene["gene_name"], "risk_predictors": risk_predictors})
 
         return high_risk_genes
-
-
-annot = Annotation.load_from_json("annotation.json")

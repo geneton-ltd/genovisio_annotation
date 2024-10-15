@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "annotation"
-version = "0..0"
+version = "0.1.0"
 description = "CNV annotation tool"
 authors = ["Marcel Kucharik <marcel.kucharik@geneton.sk>", "Michaela Gaziova <michaela.gaziova@geneton.sk>", "Jozef Sitarcik <jozef.sitarcik@geneton.sk>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ pandas = ">=2.2"
 pymongo = "==4.8"
 
 [tool.poetry.scripts]
-annotate = "annotation.main:main"
+annotate = "annotation.annotation:main"
 
 [build-system]
 requires = ["poetry-core"]
