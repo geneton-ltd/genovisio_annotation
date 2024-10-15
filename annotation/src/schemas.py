@@ -15,11 +15,10 @@ class GenesDBGeneTypes(enum.StrEnum):
 
     PROTEIN_CODING = "protein_coding"
     PSEUDOGENE = "pseudogene"
-    LINC_RNA = "lncrna"
-    R_RNA = "rrna"
-    S_NRNA = "snrna"
-    MIRNA = "mirna"
-    OTHER = "other"
+    LINC_RNA = "lncRNA"
+    R_RNA = "rRNA"
+    S_NRNA = "snRNA"
+    MIRNA = "miRNA"
 
 
 class GenesDBGeneTypesCounter(TypedDict):
@@ -29,8 +28,7 @@ class GenesDBGeneTypesCounter(TypedDict):
     rrna: int
     snrna: int
     mirna: int
-    gene_type_other: int
-    gencode_genes: int
+    other: int
 
 
 class RegulatoryTypes(enum.StrEnum):
@@ -51,19 +49,19 @@ class RegulatoryTypes(enum.StrEnum):
 
 
 class RegulatoryTypesCounter(TypedDict):
-    regulatory_enhancer: int
-    regulatory_promoter: int
-    regulatory_open_chromatin_region: int
-    regulatory_CTCF_binding_site: int
-    regulatory_TF_binding_site: int
-    regulatory_curated: int
-    regulatory_flanking_region: int
-    regulatory_silencer: int
-    regulatory_transcriptional_cis_regulatory_region: int
-    regulatory_DNase_I_hypersensitive_site: int
-    regulatory_enhancer_blocking_element: int
-    regulatory_TATA_box: int
-    regulatory: int
+    enhancer: int
+    promoter: int
+    open_chromatin_region: int
+    CTCF_binding_site: int
+    TF_binding_site: int
+    curated: int
+    flanking_region: int
+    silencer: int
+    transcriptional_cis_regulatory_region: int
+    DNase_I_hypersensitive_site: int
+    enhancer_blocking_element: int
+    TATA_box: int
+    other: int
 
 
 class TranscriptRegion(TypedDict):
@@ -220,15 +218,14 @@ class Annotation:
             "rrna": 0,
             "snrna": 0,
             "mirna": 0,
-            "gene_type_other": 0,
-            "gencode_genes": 0,
+            "other": 0,
         }
 
         for gene in self.get_genes():
             gene_type = gene.get("gene_type", "")
             if GenesDBGeneTypes.PROTEIN_CODING in gene_type:
                 counter["protein_coding"] += 1
-            if GenesDBGeneTypes.PSEUDOGENE in gene_type:
+            elif GenesDBGeneTypes.PSEUDOGENE in gene_type:
                 counter["pseudogenes"] += 1
             elif GenesDBGeneTypes.LINC_RNA in gene_type:
                 counter["lncrna"] += 1
@@ -238,56 +235,54 @@ class Annotation:
                 counter["snrna"] += 1
             elif GenesDBGeneTypes.MIRNA in gene_type:
                 counter["mirna"] += 1
-            elif gene_type:
-                counter["gene_type_other"] += 1
             else:
-                counter["gencode_genes"] += 1
+                counter["other"] += 1
         return counter
 
     def count_regulatory_types(self) -> RegulatoryTypesCounter:
         counter: RegulatoryTypesCounter = {
-            "regulatory_enhancer": 0,
-            "regulatory_promoter": 0,
-            "regulatory_open_chromatin_region": 0,
-            "regulatory_CTCF_binding_site": 0,
-            "regulatory_TF_binding_site": 0,
-            "regulatory_curated": 0,
-            "regulatory_flanking_region": 0,
-            "regulatory_silencer": 0,
-            "regulatory_transcriptional_cis_regulatory_region": 0,
-            "regulatory_DNase_I_hypersensitive_site": 0,
-            "regulatory_enhancer_blocking_element": 0,
-            "regulatory_TATA_box": 0,
-            "regulatory": 0,
+            "enhancer": 0,
+            "promoter": 0,
+            "open_chromatin_region": 0,
+            "CTCF_binding_site": 0,
+            "TF_binding_site": 0,
+            "curated": 0,
+            "flanking_region": 0,
+            "silencer": 0,
+            "transcriptional_cis_regulatory_region": 0,
+            "DNase_I_hypersensitive_site": 0,
+            "enhancer_blocking_element": 0,
+            "TATA_box": 0,
+            "other": 0,
         }
         regulatory_types = [region["type"] for region in self._regulatory]
         for reg_type in regulatory_types:
             if reg_type == RegulatoryTypes.ENHANCER:
-                counter["regulatory_enhancer"] += 1
+                counter["enhancer"] += 1
             elif reg_type == RegulatoryTypes.PROMOTER:
-                counter["regulatory_promoter"] += 1
+                counter["promoter"] += 1
             elif reg_type == RegulatoryTypes.OPEN_CHROMATIN_REGION:
-                counter["regulatory_open_chromatin_region"] += 1
+                counter["open_chromatin_region"] += 1
             elif reg_type == RegulatoryTypes.CTCF_BINDING_SITE:
-                counter["regulatory_CTCF_binding_site"] += 1
+                counter["CTCF_binding_site"] += 1
             elif reg_type == RegulatoryTypes.TF_BINDING_SITE:
-                counter["regulatory_TF_binding_site"] += 1
+                counter["TF_binding_site"] += 1
             elif reg_type == RegulatoryTypes.CURATED:
-                counter["regulatory_curated"] += 1
+                counter["curated"] += 1
             elif reg_type == RegulatoryTypes.FLANKING_REGION:
-                counter["regulatory_flanking_region"] += 1
+                counter["flanking_region"] += 1
             elif reg_type == RegulatoryTypes.SILENCER:
-                counter["regulatory_silencer"] += 1
+                counter["silencer"] += 1
             elif reg_type == RegulatoryTypes.TRANSCRIPTIONAL_CIS_REGULATORY_REGION:
-                counter["regulatory_transcriptional_cis_regulatory_region"] += 1
+                counter["transcriptional_cis_regulatory_region"] += 1
             elif reg_type == RegulatoryTypes.DNASE_I_HYPERSENSITIVE_SITE:
-                counter["regulatory_DNase_I_hypersensitive_site"] += 1
+                counter["DNase_I_hypersensitive_site"] += 1
             elif reg_type == RegulatoryTypes.ENHANCER_BLOCKING_ELEMENT:
-                counter["regulatory_enhancer_blocking_element"] += 1
+                counter["enhancer_blocking_element"] += 1
             elif reg_type == RegulatoryTypes.TATA_BOX:
-                counter["regulatory_TATA_box"] += 1
+                counter["TATA_box"] += 1
             else:
-                counter["regulatory"] += 1
+                counter["other"] += 1
         return counter
 
     @cached_property
