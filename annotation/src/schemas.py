@@ -31,6 +31,11 @@ class GenesDBGeneTypesCounter(TypedDict):
     other: int
 
 
+class AnnotatedGenesList(TypedDict):
+    morbid_genes: list[str]
+    associated_with_disease: list[str]
+
+
 class RegulatoryTypes(enum.StrEnum):
     """Types of regulatory elements as stored in the database."""
 
@@ -284,6 +289,21 @@ class Annotation:
             else:
                 counter["other"] += 1
         return counter
+
+    def get_annotated_genes(self) -> AnnotatedGenesList:
+        genes = self.get_genes()
+        annot_genes: AnnotatedGenesList = {
+            "morbid_genes": [],
+            "associated_with_disease": [],
+        }
+
+        for gene in genes:
+            if "AnnotSV" in gene:
+                if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
+                    annot_genes["morbid_genes"].append(gene["gene_name"])
+                elif "omim_phenotype" in gene["AnnotSV"]:
+                    annot_genes["associated_with_disease"].append(gene["gene_name"])
+        return annot_genes
 
     @cached_property
     def _ts_regions(self) -> list[dict[str, Any]]:
