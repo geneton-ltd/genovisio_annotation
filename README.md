@@ -1,6 +1,3 @@
-# genovisio_annotation
-Annotation of genovisio database
-
 # Genovisio annotation
 
 [![Python version](https://img.shields.io/badge/python-3.12+-green.svg)](https://www.python.org/downloads/)

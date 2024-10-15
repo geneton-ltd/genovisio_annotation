@@ -1,7 +1,8 @@
 import re
 from dataclasses import dataclass
 from functools import cached_property
-from annotation.src import enums, constants, core, exceptions
+
+from annotation.src import constants, core, enums, exceptions
 
 
 @dataclass
@@ -11,7 +12,7 @@ class CNVRegion:
     end: int
     cnv_type: enums.CNVType
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.start > self.end:
             raise exceptions.InvalidRegionRangeError(self.start, self.end)
 
@@ -49,13 +50,16 @@ class CNVRegion:
             cnv_type=enums.CNVType(cnv_type_map[match.group(4).lower()]),
         )
 
-
     def _get_cytobands_overlap(self) -> list[str]:
         import pandas as pd
-        cytobands = pd.read_csv(core.CYTOBANDS_FILEPATH, sep='\t', header=None, names=['chrom', 'start', 'end', 'name', 'color'])
-        cyto_overlap = (cytobands['chrom'] == self.chr) & (cytobands['end'] >= self.start) & (cytobands['start'] <= self.end)
-        return list(cytobands[cyto_overlap]['name'])
 
+        cytobands = pd.read_csv(
+            core.CYTOBANDS_FILEPATH, sep="\t", header=None, names=["chrom", "start", "end", "name", "color"]
+        )
+        cyto_overlap = (
+            (cytobands["chrom"] == self.chr) & (cytobands["end"] >= self.start) & (cytobands["start"] <= self.end)
+        )
+        return list(cytobands[cyto_overlap]["name"])
 
     def _infer_cytogenetic_position(self) -> str:
         """
@@ -70,4 +74,4 @@ class CNVRegion:
         if len(all_cytobands) == 1:
             return all_cytobands[0]
 
-        return f'{all_cytobands[0]}-{all_cytobands[-1]}'
+        return f"{all_cytobands[0]}-{all_cytobands[-1]}"

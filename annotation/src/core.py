@@ -2,12 +2,12 @@ import os
 
 SRC_DIR = os.path.abspath(os.path.dirname(__file__))
 
-CYTOBANDS_FILEPATH = os.path.join(SRC_DIR, 'cytobands', 'cytoBand_hg38.txt')
+CYTOBANDS_FILEPATH = os.path.join(SRC_DIR, "cytobands", "cytoBand_hg38.txt")
 
 
 REGION_REGEX = r"(chr[\dXY]+):(\d+)-(\d+)/(\w+)"
 JSON_INDENT_LEVEL = 2
-ENCODING = 'utf-8'
+ENCODING = "utf-8"
 
 
-sufficient_HI_TS_scores = ['3']
+sufficient_HI_TS_scores = ["3"]

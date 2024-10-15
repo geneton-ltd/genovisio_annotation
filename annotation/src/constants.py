@@ -1,4 +1,3 @@
-
 ALLOWED_CHROMOSOMES = [
     "chr1",
     "chr2",
