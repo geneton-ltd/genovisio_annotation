@@ -40,7 +40,7 @@ To use API:
 ```py
 import annotation
 
-annot = annotation.Annotation('annotation.json')
+annot = annotation.Annotation.load_from_json('annotation.json')
 # use annot object ...
 ```
 
@@ -69,7 +69,7 @@ Activate the virtual environment where dependencies are installed:
 poetry shell
 ```
 
-All dependencies are now installed and you can run any code using:
+All dependencies are now installed and you can run using:
 
 - entrypoint command `annotate {ARGS}`
 - `python {python_script}` like `python annotation/annotation.py {ARGS}`
@@ -90,7 +90,7 @@ Now in the cloned repository, install the package:
 poetry install
 ```
 
-All dependencies are now installed and you can run any marcnv code using:
+All dependencies are now installed and you can run using:
 
 - entrypoint command `annotate {ARGS}`
 - `python {python_script}` like `python annotation/annotation.py {ARGS}`

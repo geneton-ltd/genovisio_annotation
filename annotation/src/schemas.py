@@ -1,3 +1,4 @@
+import enum
 import gzip
 import json
 import math
@@ -7,6 +8,62 @@ from functools import cached_property
 from typing import Any, TypedDict
 
 from annotation.src import core, enums, exceptions
+
+
+class GenesDBGeneTypes(enum.StrEnum):
+    """Types of genes as stored in the GenesDB database."""
+
+    PROTEIN_CODING = "protein_coding"
+    PSEUDOGENE = "pseudogene"
+    LINC_RNA = "lncrna"
+    R_RNA = "rrna"
+    S_NRNA = "snrna"
+    MIRNA = "mirna"
+    OTHER = "other"
+
+
+class GenesDBGeneTypesCounter(TypedDict):
+    protein_coding: int
+    pseudogenes: int
+    lncrna: int
+    rrna: int
+    snrna: int
+    mirna: int
+    gene_type_other: int
+    gencode_genes: int
+
+
+class RegulatoryTypes(enum.StrEnum):
+    """Types of regulatory elements as stored in the database."""
+
+    ENHANCER = "enhancer"
+    PROMOTER = "promoter"
+    OPEN_CHROMATIN_REGION = "open_chromatin_region"
+    CTCF_BINDING_SITE = "CTCF_binding_site"
+    TF_BINDING_SITE = "TF_binding_site"
+    CURATED = "regulatory_curated"
+    FLANKING_REGION = "flanking_region"
+    SILENCER = "silencer"
+    TRANSCRIPTIONAL_CIS_REGULATORY_REGION = "transcriptional_cis_regulatory_region"
+    DNASE_I_HYPERSENSITIVE_SITE = "DNase_I_hypersensitive_site"
+    ENHANCER_BLOCKING_ELEMENT = "enhancer_blocking_element"
+    TATA_BOX = "TATA_box"
+
+
+class RegulatoryTypesCounter(TypedDict):
+    regulatory_enhancer: int
+    regulatory_promoter: int
+    regulatory_open_chromatin_region: int
+    regulatory_CTCF_binding_site: int
+    regulatory_TF_binding_site: int
+    regulatory_curated: int
+    regulatory_flanking_region: int
+    regulatory_silencer: int
+    regulatory_transcriptional_cis_regulatory_region: int
+    regulatory_DNase_I_hypersensitive_site: int
+    regulatory_enhancer_blocking_element: int
+    regulatory_TATA_box: int
+    regulatory: int
 
 
 class TranscriptRegion(TypedDict):
@@ -97,17 +154,17 @@ class CNVRegionAnnotation:
         return self.start <= position <= self.end
 
 
-@dataclass
+@dataclass(frozen=True)
 class Annotation:
     cnv: CNVRegionAnnotation
-    benign_cnv: list[dict[str, Any]]
-    benign_cnv_gs_inner: list[dict[str, Any]]
-    benign_cnv_gs_outer: list[dict[str, Any]]
-    regulatory: list[dict[str, Any]]
-    gnomad: list[dict[str, Any]]
-    hi_gene: list[dict[str, Any]]
-    hi_region: list[dict[str, Any]]
-    genes: list[dict[str, Any]]
+    _benign_cnv: list[dict[str, Any]]
+    _benign_cnv_gs_inner: list[dict[str, Any]]
+    _benign_cnv_gs_outer: list[dict[str, Any]]
+    _regulatory: list[dict[str, Any]]
+    _gnomad: list[dict[str, Any]]
+    _hi_gene: list[dict[str, Any]]
+    _hi_region: list[dict[str, Any]]
+    _genes: list[dict[str, Any]]
 
     @classmethod
     def load_from_json(cls, json_file: str) -> "Annotation":
@@ -123,66 +180,142 @@ class Annotation:
 
         return cls(
             cnv=CNVRegionAnnotation(**json_data["cnv"]),
-            benign_cnv=json_data["benign_cnv"],
-            benign_cnv_gs_inner=json_data["benign_cnv_gs_inner"],
-            benign_cnv_gs_outer=json_data["benign_cnv_gs_outer"],
-            regulatory=json_data["regulatory"],
-            gnomad=json_data["gnomad"],
-            hi_gene=json_data["hi_gene"],
-            hi_region=json_data["hi_region"],
-            genes=json_data["genes"],
+            _benign_cnv=json_data["_benign_cnv"],
+            _benign_cnv_gs_inner=json_data["_benign_cnv_gs_inner"],
+            _benign_cnv_gs_outer=json_data["_benign_cnv_gs_outer"],
+            _regulatory=json_data["_regulatory"],
+            _gnomad=json_data["_gnomad"],
+            _hi_gene=json_data["_hi_gene"],
+            _hi_region=json_data["_hi_region"],
+            _genes=json_data["_genes"],
         )
 
     def get_gene_by_name(self, gene_name: str) -> dict[str, Any] | None:
         """Get 'Genes' entry with gene_name"""
-        for gene in self.genes:
+        for gene in self._genes:
             if gene.get("gene_name", "") == gene_name:
                 return gene
         return None
 
+    # TODO gene types should be some enum?
     def get_genes(
         self, gene_type: str | None = None, overlap: enums.OverlapType = enums.OverlapType.all
     ) -> list[dict[str, Any]]:
         """Get 'Genes' entries whose gene_type is 'gene_type' and overlaps the CNV region in that manner"""
         if gene_type:
-            genes = [gene for gene in self.genes if gene["gene_type"] == gene_type]
+            genes = [gene for gene in self._genes if gene["gene_type"] == gene_type]
         else:
-            genes = self.genes
-
+            genes = self._genes
         return [gene for gene in genes if self.cnv.is_overlapping(gene["start"], gene["end"], overlap)]
-
-    def get_protein_coding_genes(self) -> list[dict[str, Any]]:  # TODO replace
-        """Get 'Genes' entries whose gene_type is 'protein_coding'"""
-        return self.get_genes(gene_type="protein_coding")
 
     def get_enhancers(self) -> list[dict[str, Any]]:
         """Get 'Regulatory' entries whose type is 'enhancer'"""
-        return [region for region in self.regulatory if region["type"] == "enhancer"]
+        return [region for region in self._regulatory if region["type"] == "enhancer"]
+
+    def count_gene_types(self) -> GenesDBGeneTypesCounter:
+        counter: GenesDBGeneTypesCounter = {
+            "protein_coding": 0,
+            "pseudogenes": 0,
+            "lncrna": 0,
+            "rrna": 0,
+            "snrna": 0,
+            "mirna": 0,
+            "gene_type_other": 0,
+            "gencode_genes": 0,
+        }
+
+        for gene in self.get_genes():
+            gene_type = gene.get("gene_type", "")
+            if GenesDBGeneTypes.PROTEIN_CODING in gene_type:
+                counter["protein_coding"] += 1
+            if GenesDBGeneTypes.PSEUDOGENE in gene_type:
+                counter["pseudogenes"] += 1
+            elif GenesDBGeneTypes.LINC_RNA in gene_type:
+                counter["lncrna"] += 1
+            elif GenesDBGeneTypes.R_RNA in gene_type:
+                counter["rrna"] += 1
+            elif GenesDBGeneTypes.S_NRNA in gene_type:
+                counter["snrna"] += 1
+            elif GenesDBGeneTypes.MIRNA in gene_type:
+                counter["mirna"] += 1
+            elif gene_type:
+                counter["gene_type_other"] += 1
+            else:
+                counter["gencode_genes"] += 1
+        return counter
+
+    def count_regulatory_types(self) -> RegulatoryTypesCounter:
+        counter: RegulatoryTypesCounter = {
+            "regulatory_enhancer": 0,
+            "regulatory_promoter": 0,
+            "regulatory_open_chromatin_region": 0,
+            "regulatory_CTCF_binding_site": 0,
+            "regulatory_TF_binding_site": 0,
+            "regulatory_curated": 0,
+            "regulatory_flanking_region": 0,
+            "regulatory_silencer": 0,
+            "regulatory_transcriptional_cis_regulatory_region": 0,
+            "regulatory_DNase_I_hypersensitive_site": 0,
+            "regulatory_enhancer_blocking_element": 0,
+            "regulatory_TATA_box": 0,
+            "regulatory": 0,
+        }
+        regulatory_types = [region["type"] for region in self._regulatory]
+        for reg_type in regulatory_types:
+            if reg_type == RegulatoryTypes.ENHANCER:
+                counter["regulatory_enhancer"] += 1
+            elif reg_type == RegulatoryTypes.PROMOTER:
+                counter["regulatory_promoter"] += 1
+            elif reg_type == RegulatoryTypes.OPEN_CHROMATIN_REGION:
+                counter["regulatory_open_chromatin_region"] += 1
+            elif reg_type == RegulatoryTypes.CTCF_BINDING_SITE:
+                counter["regulatory_CTCF_binding_site"] += 1
+            elif reg_type == RegulatoryTypes.TF_BINDING_SITE:
+                counter["regulatory_TF_binding_site"] += 1
+            elif reg_type == RegulatoryTypes.CURATED:
+                counter["regulatory_curated"] += 1
+            elif reg_type == RegulatoryTypes.FLANKING_REGION:
+                counter["regulatory_flanking_region"] += 1
+            elif reg_type == RegulatoryTypes.SILENCER:
+                counter["regulatory_silencer"] += 1
+            elif reg_type == RegulatoryTypes.TRANSCRIPTIONAL_CIS_REGULATORY_REGION:
+                counter["regulatory_transcriptional_cis_regulatory_region"] += 1
+            elif reg_type == RegulatoryTypes.DNASE_I_HYPERSENSITIVE_SITE:
+                counter["regulatory_DNase_I_hypersensitive_site"] += 1
+            elif reg_type == RegulatoryTypes.ENHANCER_BLOCKING_ELEMENT:
+                counter["regulatory_enhancer_blocking_element"] += 1
+            elif reg_type == RegulatoryTypes.TATA_BOX:
+                counter["regulatory_TATA_box"] += 1
+            else:
+                counter["regulatory"] += 1
+        return counter
 
     @cached_property
     def _ts_regions(self) -> list[dict[str, Any]]:
         return [
-            reg for reg in self.hi_region if str(reg.get("Triplosensitivity Score", "")) in core.sufficient_HI_TS_scores
+            reg
+            for reg in self._hi_region
+            if str(reg.get("Triplosensitivity Score", "")) in core.sufficient_HI_TS_scores
         ]
 
     @cached_property
     def _hi_regions(self) -> list[dict[str, Any]]:
         return [
             reg
-            for reg in self.hi_region
+            for reg in self._hi_region
             if str(reg.get("Haploinsufficiency Score", "")) in core.sufficient_HI_TS_scores
         ]
 
     @cached_property
     def _ts_genes(self) -> list[dict[str, Any]]:
         return [
-            reg for reg in self.hi_gene if str(reg.get("Triplosensitivity Score", "")) in core.sufficient_HI_TS_scores
+            reg for reg in self._hi_gene if str(reg.get("Triplosensitivity Score", "")) in core.sufficient_HI_TS_scores
         ]
 
     @cached_property
     def _hi_genes(self) -> list[dict[str, Any]]:
         return [
-            reg for reg in self.hi_gene if str(reg.get("Haploinsufficiency Score", "")) in core.sufficient_HI_TS_scores
+            reg for reg in self._hi_gene if str(reg.get("Haploinsufficiency Score", "")) in core.sufficient_HI_TS_scores
         ]
 
     def get_ts_regions(self, overlap_type: enums.OverlapType | None) -> list[dict[str, Any]]:
@@ -224,7 +357,7 @@ class Annotation:
         results: list[CommonVariabilityRegion] = []
         regions = [
             variability
-            for variability in self.gnomad
+            for variability in self._gnomad
             if variability["start"] <= self.cnv.start
             and variability["end"] >= self.cnv.end
             and variability["population"] == "nfe"
@@ -243,13 +376,13 @@ class Annotation:
         return results
 
     def get_benign_cnvs_gs_outer(self) -> list[dict[str, Any]]:
-        min_frequency: float = 0.005
+        """Get Benign CNV GS outer entries with no defined frequency or frequency high enough"""
         cnvs = [
             cnv
-            for cnv in self.benign_cnv_gs_outer
+            for cnv in self._benign_cnv_gs_outer
             if cnv.get("frequency", "") == ""
             or math.isnan(cnv["frequency"])
-            or float(cnv["frequency"]) >= float(min_frequency)
+            or float(cnv["frequency"]) >= float(core.MIN_FREQUENCY_BENIGN)
         ]
 
         if self.cnv.is_duplication:
@@ -257,7 +390,7 @@ class Annotation:
         else:
             return cnvs  # TODO does not make any sense?
 
-    def get_overregions(self, gene_name: str) -> list[TranscriptRegion]:
+    def get_gene_transcript_regions(self, gene_name: str) -> list[TranscriptRegion]:
         gene_info = self.get_gene_by_name(gene_name)
         if gene_info is None:
             return []

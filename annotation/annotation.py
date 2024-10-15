@@ -2,6 +2,7 @@ import argparse
 import enum
 import gzip
 import json
+from dataclasses import asdict
 
 from annotation.src import cnv_region, collections, core, schemas
 
@@ -38,14 +39,14 @@ def get_whole_annotation(input_str: str, mongodb_uri: str, db_name: str) -> sche
 
     return schemas.Annotation(
         cnv=cnv_annotation,
-        benign_cnv=results[_CollectionName.BENIGN_CNV],
-        benign_cnv_gs_inner=results[_CollectionName.BENIGN_CNV_GS_INNER],
-        benign_cnv_gs_outer=results[_CollectionName.BENIGN_CNV_GS_OUTER],
-        regulatory=results[_CollectionName.REGULATORY],
-        gnomad=results[_CollectionName.GNOMAD],
-        hi_gene=results[_CollectionName.HI_GENE],
-        hi_region=results[_CollectionName.HI_REGION],
-        genes=results[_CollectionName.GENES],
+        _benign_cnv=results[_CollectionName.BENIGN_CNV],
+        _benign_cnv_gs_inner=results[_CollectionName.BENIGN_CNV_GS_INNER],
+        _benign_cnv_gs_outer=results[_CollectionName.BENIGN_CNV_GS_OUTER],
+        _regulatory=results[_CollectionName.REGULATORY],
+        _gnomad=results[_CollectionName.GNOMAD],
+        _hi_gene=results[_CollectionName.HI_GENE],
+        _hi_region=results[_CollectionName.HI_REGION],
+        _genes=results[_CollectionName.GENES],
     )
 
 
@@ -68,10 +69,10 @@ def main() -> None:
 
     if args.output.endswith(".gz"):
         with gzip.open(args.output, "wt", encoding=core.ENCODING) as f:
-            f.write(json.dumps(annotation, default=str, indent=core.JSON_INDENT_LEVEL))
+            f.write(json.dumps(asdict(annotation), default=str, indent=core.JSON_INDENT_LEVEL))
     else:
         with open(args.output, "w", encoding=core.ENCODING) as f:
-            f.write(json.dumps(annotation, default=str, indent=core.JSON_INDENT_LEVEL))
+            f.write(json.dumps(asdict(annotation), default=str, indent=core.JSON_INDENT_LEVEL))
 
 
 if __name__ == "__main__":
