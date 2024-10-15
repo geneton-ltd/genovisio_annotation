@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "annotation"
+version = "0..0"
+description = "CNV annotation tool"
+authors = ["Marcel Kucharik <marcel.kucharik@geneton.sk>", "Michaela Gaziova <michaela.gaziova@geneton.sk>", "Jozef Sitarcik <jozef.sitarcik@geneton.sk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+pandas = ">=2.2"
+pymongo = "==4.8"
+
+[tool.poetry.scripts]
+annotate = "annotation.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
