@@ -50,3 +50,19 @@ class CNVTypeNormalizationError(GenovisioAnnotationError):
     def __init__(self, cnv_type: str):
         message = f"{cnv_type=} could not be normalized into a valid CNVType"
         super().__init__(message)
+
+
+class HighRiskForDuplicationError(GenovisioAnnotationError):
+    """Exception is raised when the region is duplication and high risk genes are requested"""
+
+    def __init__(self) -> None:
+        message = "Only losses should be considered for high risk genes"
+        super().__init__(message)
+
+
+class UnknownOverlapTypeError(GenovisioAnnotationError):
+    """Exception is raised when the overlap type is not in the allowed list."""
+
+    def __init__(self, overlap_type: str, allowed_types: list[str]):
+        message = f"{overlap_type=} is not among {allowed_types=}"
+        super().__init__(message)

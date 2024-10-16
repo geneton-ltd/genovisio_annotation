@@ -1,0 +1,172 @@
+{
+  "cnv": {
+    "chr": "chr1",
+    "start": 1,
+    "end": 2,
+    "cnv_type": "gain",
+    "length": 1,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  },
+  "_gnomad": [
+    {
+      "_id": "test",
+      "chromosome": "test",
+      "start": 1,
+      "end": 2,
+      "svtype": "duplication",
+      "population": "nfe",
+      "count": 30,
+      "frequencies": {
+        "male": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 10,
+            "freq": 1.0
+          }
+        },
+        "female": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 10,
+            "freq": 1.0
+          }
+        },
+        "all": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 2,
+            "freq": 0.2
+          },
+          "HOMREF": {
+            "count": 8,
+            "freq": 0.8
+          }
+        }
+      }
+    },
+    {
+      "_id": "test",
+      "chromosome": "test",
+      "start": 1,
+      "end": 2,
+      "svtype": "duplication",
+      "population": "nfe",
+      "count": 842,
+      "frequencies": {
+        "male": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 201,
+            "freq": 1.0
+          }
+        },
+        "female": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 220,
+            "freq": 1.0
+          }
+        },
+        "all": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 421,
+            "freq": 1.0
+          }
+        }
+      }
+    },
+    {
+      "_id": "test",
+      "chromosome": "test",
+      "start": 1,
+      "end": 2,
+      "svtype": "duplication",
+      "population": "afr",
+      "count": 12592,
+      "frequencies": {
+        "male": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 3491,
+            "freq": 1.0
+          }
+        },
+        "female": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 2805,
+            "freq": 1.0
+          }
+        },
+        "all": {
+          "HET": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMALT": {
+            "count": 0,
+            "freq": 0.0
+          },
+          "HOMREF": {
+            "count": 6296,
+            "freq": 1.0
+          }
+        }
+      }
+    }
+  ]
+}
