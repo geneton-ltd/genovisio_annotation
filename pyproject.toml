@@ -12,7 +12,6 @@ pymongo = "==4.8"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.0.0"
-pytest-mock = "*"
 
 [tool.poetry.scripts]
 annotate = "annotation.annotation:main"
