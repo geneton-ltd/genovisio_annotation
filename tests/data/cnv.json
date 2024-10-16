@@ -1,0 +1,11 @@
+{
+  "cnv": {
+    "chr": "chr1",
+    "start": 10000,
+    "end": 20000,
+    "cnv_type": "gain",
+    "length": 10000,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  }
+}
