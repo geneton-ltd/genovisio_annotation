@@ -1,0 +1,56 @@
+{
+  "cnv": {
+    "chr": "chr1",
+    "start": 10000,
+    "end": 20000,
+    "cnv_type": "gain",
+    "length": 10000,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  },
+  "_benign_cnv": [],
+  "_benign_cnv_gs_inner": [],
+  "_benign_cnv_gs_outer": [],
+  "_regulatory": [
+    {
+      "_id": "test1",
+      "id": "test1",
+      "source": "Ensembl_Ensembl",
+      "type": "enhancer",
+      "chromosome": "chr1",
+      "start": 18701,
+      "end": 19100
+  },
+    {
+      "_id": "test2",
+      "id": "test2",
+      "source": "Ensembl_Ensembl",
+      "type": "promoter",
+      "chromosome": "chr1",
+      "start": 18701,
+      "end": 19100
+  },
+  {
+    "_id": "test3",
+    "id": "test3",
+    "source": "Ensembl_Ensembl",
+    "type": "flanking_region",
+    "chromosome": "chr1",
+    "start": 18701,
+    "end": 19100
+  },
+  {
+    "_id": "test4",
+    "id": "test4",
+    "source": "Ensembl_Ensembl",
+    "type": "something_else",
+    "chromosome": "chr1",
+    "start": 18701,
+    "end": 19100
+  }
+  ],
+  "_hi_gene": [],
+  "_hi_region": [],
+  "_genes": [],
+  "_gnomad": []
+}

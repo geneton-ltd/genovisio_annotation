@@ -1,24 +1,10 @@
-import enum
 import gzip
 import json
-import math
 import os
 from dataclasses import dataclass
-from functools import cached_property
 from typing import Any, TypedDict
 
 from annotation.src import core, entry_schemas, enums, exceptions
-
-
-class GenesDBGeneTypes(enum.StrEnum):
-    """Types of genes as stored in the GenesDB database."""
-
-    PROTEIN_CODING = "protein_coding"
-    PSEUDOGENE = "pseudogene"
-    LINC_RNA = "lncRNA"
-    R_RNA = "rRNA"
-    S_NRNA = "snRNA"
-    MIRNA = "miRNA"
 
 
 class GenesDBGeneTypesCounter(TypedDict):
@@ -34,23 +20,6 @@ class GenesDBGeneTypesCounter(TypedDict):
 class AnnotatedGenesList(TypedDict):
     morbid_genes: list[str]
     associated_with_disease: list[str]
-
-
-class RegulatoryTypes(enum.StrEnum):
-    """Types of regulatory elements as stored in the database."""
-
-    ENHANCER = "enhancer"
-    PROMOTER = "promoter"
-    OPEN_CHROMATIN_REGION = "open_chromatin_region"
-    CTCF_BINDING_SITE = "CTCF_binding_site"
-    TF_BINDING_SITE = "TF_binding_site"
-    CURATED = "regulatory_curated"
-    FLANKING_REGION = "flanking_region"
-    SILENCER = "silencer"
-    TRANSCRIPTIONAL_CIS_REGULATORY_REGION = "transcriptional_cis_regulatory_region"
-    DNASE_I_HYPERSENSITIVE_SITE = "DNase_I_hypersensitive_site"
-    ENHANCER_BLOCKING_ELEMENT = "enhancer_blocking_element"
-    TATA_BOX = "TATA_box"
 
 
 class RegulatoryTypesCounter(TypedDict):
@@ -110,9 +79,11 @@ class CNVRegionAnnotation:
 
     @property
     def genomic_coord(self) -> str:
+        """Get the genomic coordinates in the format chr:start-end"""
         return f"{self.chr}:{self.start}-{self.end}"
 
     def matches_cnv_type_or_both(self, benign_cnv_type: str) -> bool:
+        """Check whether benign_cnv matches the CNV type or is a combination of both"""
         try:
             return _normalize_type(benign_cnv_type) == self.cnv_type
         except exceptions.CNVTypeNormalizationError:
@@ -129,24 +100,24 @@ class CNVRegionAnnotation:
         """Check if the CNV region has its end in the target region"""
         return target_start <= self.end <= target_end
 
-    def is_overlapping(self, target_start: int, target_end: int, overlap: enums.OverlapType) -> bool:
+    def is_overlapping(self, target_start: int, target_end: int, overlap: enums.Overlap) -> bool:
         """Check if the CNV region overlaps with another region in the specified manner"""
-        if overlap == enums.OverlapType.all:
+        if overlap == enums.Overlap.ANY:
             return target_start < self.end and target_end > self.start
-        elif overlap == enums.OverlapType.span_whole_only:
+        elif overlap == enums.Overlap.SPAN_ENTIRE:
             return target_start <= self.start and target_end >= self.end
-        elif overlap == enums.OverlapType.partial_start:
+        elif overlap == enums.Overlap.START_ONLY:
             return target_start <= self.start < target_end <= self.end
-        elif overlap == enums.OverlapType.partial_end:
+        elif overlap == enums.Overlap.END_ONLY:
             return self.start < target_start <= self.end <= target_end
-        elif overlap == enums.OverlapType.partial_both:
+        elif overlap == enums.Overlap.START_OR_END:
             return (target_start <= self.start < target_end < self.end) or (
                 self.start < target_start < self.end <= target_end
             )
-        elif overlap == enums.OverlapType.inside_only:
+        elif overlap == enums.Overlap.CONTAINED_INSIDE:
             return self.start <= target_start and target_end <= self.end
         else:
-            raise exceptions.UnknownOverlapTypeError(overlap, enums.OverlapType.values())
+            raise exceptions.UnknownOverlapTypeError(overlap, enums.Overlap.values())
 
     def get_overlap_with_region(self, target_start: int, target_end: int) -> int:
         """Get the number of overlapping bases with another interval."""
@@ -160,17 +131,35 @@ class CNVRegionAnnotation:
 @dataclass(frozen=True)
 class Annotation:
     cnv: CNVRegionAnnotation
-    _benign_cnv: list[dict[str, Any]]
-    _benign_cnv_gs_inner: list[dict[str, Any]]
-    _benign_cnv_gs_outer: list[dict[str, Any]]
-    _regulatory: list[dict[str, Any]]
+    _benign_cnv: list[entry_schemas.BenignCNVDBEntry]
+    _benign_cnv_gs_inner: list[entry_schemas.BenignCNVGSDBEntry]
+    _benign_cnv_gs_outer: list[entry_schemas.BenignCNVGSDBEntry]
+    _regulatory: list[entry_schemas.RegulatoryEntry]
     _gnomad: list[entry_schemas.GnomADEntry]
     _hi_gene: list[entry_schemas.HiGeneEntry]
-    _hi_region: list[dict[str, Any]]
-    _genes: list[dict[str, Any]]
+    _hi_region: list[entry_schemas.HiRegionEntry]
+    _genes: list[entry_schemas.GenesDBEntry]
 
     @classmethod
     def load_from_json(cls, json_file: str) -> "Annotation":
+        """
+        Load annotation from a JSON file
+
+        Parameters
+        ----------
+        json_file : str
+            Path to the JSON file. Can be gzipped.
+
+        Returns
+        -------
+        Annotation
+            Annotation object loaded from the JSON file.
+
+        Raises
+        ------
+        FileNotFoundError
+            If the file does not exist.
+        """
         if not os.path.exists(json_file):
             raise FileNotFoundError(f"File {json_file} not found")
 
@@ -181,19 +170,22 @@ class Annotation:
             with open(json_file, "r") as f:
                 json_data = json.load(f)
 
-        return cls(
-            cnv=CNVRegionAnnotation(**json_data["cnv"]),
-            _benign_cnv=json_data.get("_benign_cnv", []),
-            _benign_cnv_gs_inner=json_data.get("_benign_cnv_gs_inner", []),
-            _benign_cnv_gs_outer=json_data.get("_benign_cnv_gs_outer", []),
-            _regulatory=json_data.get("_regulatory", []),
-            _gnomad=json_data.get("_gnomad", []),
-            _hi_gene=json_data.get("_hi_gene", []),
-            _hi_region=json_data.get("_hi_region", []),
-            _genes=json_data.get("_genes", []),
-        )
+        try:
+            return cls(
+                cnv=CNVRegionAnnotation(**json_data["cnv"]),
+                _benign_cnv=json_data["_benign_cnv"],
+                _benign_cnv_gs_inner=json_data["_benign_cnv_gs_inner"],
+                _benign_cnv_gs_outer=json_data["_benign_cnv_gs_outer"],
+                _regulatory=json_data["_regulatory"],
+                _gnomad=json_data["_gnomad"],
+                _hi_gene=json_data["_hi_gene"],
+                _hi_region=json_data["_hi_region"],
+                _genes=json_data["_genes"],
+            )
+        except KeyError as e:
+            raise exceptions.InvalidJSONAnnotationError(json_file, str(e))
 
-    def get_gene_by_name(self, gene_name: str) -> dict[str, Any] | None:
+    def get_gene_by_name(self, gene_name: str) -> entry_schemas.GenesDBEntry | None:
         """Get 'Genes' entry with gene_name"""
         for gene in self._genes:
             if gene.get("gene_name", "") == gene_name:
@@ -202,8 +194,8 @@ class Annotation:
 
     # TODO gene types should be some enum?
     def get_genes(
-        self, gene_type: str | None = None, overlap: enums.OverlapType = enums.OverlapType.all
-    ) -> list[dict[str, Any]]:
+        self, gene_type: str | None = None, overlap: enums.Overlap = enums.Overlap.ANY
+    ) -> list[entry_schemas.GenesDBEntry]:
         """Get 'Genes' entries whose gene_type is 'gene_type' and overlaps the CNV region in that manner"""
         if gene_type:
             genes = [gene for gene in self._genes if gene["gene_type"] == gene_type]
@@ -211,11 +203,15 @@ class Annotation:
             genes = self._genes
         return [gene for gene in genes if self.cnv.is_overlapping(gene["start"], gene["end"], overlap)]
 
-    def get_enhancers(self) -> list[dict[str, Any]]:
-        """Get 'Regulatory' entries whose type is 'enhancer'"""
-        return [region for region in self._regulatory if region["type"] == "enhancer"]
-
     def get_annotated_genes(self) -> AnnotatedGenesList:
+        """
+        Get list of names for genes that are morbid or associated with a disease
+
+        Returns
+        -------
+        AnnotatedGenesList
+            Dictionary with two lists of gene names: 'morbid_genes' and 'associated_with_disease'
+        """
         genes = self.get_genes()
         annot_genes: AnnotatedGenesList = {
             "morbid_genes": [],
@@ -230,83 +226,121 @@ class Annotation:
                     annot_genes["associated_with_disease"].append(gene["gene_name"])
         return annot_genes
 
-    @cached_property
-    def _triplosensitivity_regions(self) -> list[dict[str, Any]]:
+    def get_triplosensitivity_regions(
+        self, overlap_type: enums.Overlap, valid_scores: list[int]
+    ) -> list[entry_schemas.HiRegionEntry]:
+        """
+        Get all HiRegion entries with sufficient Triplosensitivity Score
+
+        Parameters
+        ----------
+        overlap_type : enums.Overlap
+            Type of overlap to consider.
+        valid_scores : list[int]
+            List of valid scores to consider. Entry scores are coerced to integers.
+
+        Returns
+        -------
+        list[entry_schemas.HiRegionEntry]
+            List of HiRegion entries with sufficient Triplosensitivity Score
+        """
         return [
-            reg
-            for reg in self._hi_region
-            if str(reg.get("Triplosensitivity Score", "")) not in core.INVALID_TS_REGIONS_VALUES
+            r
+            for r in self._hi_region
+            if "Triplosensitivity Score" in r
+            and r["Triplosensitivity Score"] not in core.INVALID_SCORES
+            and int(float(r["Triplosensitivity Score"])) in valid_scores
+            and self.cnv.is_overlapping(r["start"], r["end"], overlap_type)
         ]
 
-    @cached_property
-    def _haploinsufficient_regions(self) -> list[dict[str, Any]]:
+    def get_haploinsufficient_regions(
+        self, overlap_type: enums.Overlap, valid_scores: list[int]
+    ) -> list[entry_schemas.HiRegionEntry]:
+        """
+        Get all HiRegion entries with sufficient Haploinsufficiency Score
+
+        Parameters
+        ----------
+        overlap_type : enums.Overlap
+            Type of overlap to consider.
+        valid_scores : list[int]
+            List of valid scores to consider. Entry scores are coerced to integers.
+
+        Returns
+        -------
+        list[entry_schemas.HiRegionEntry]
+            List of HiRegion entries with sufficient Haploinsufficiency Score
+        """
         return [
-            reg
-            for reg in self._hi_region
-            if str(reg.get("Haploinsufficiency Score", "")) not in core.INVALID_HI_REGIONS_VALUES
+            r
+            for r in self._hi_region
+            if "Haploinsufficiency Score" in r
+            and r["Haploinsufficiency Score"] not in core.INVALID_SCORES
+            and int(float(r["Haploinsufficiency Score"])) in valid_scores
+            and self.cnv.is_overlapping(r["start"], r["end"], overlap_type)
         ]
 
-    @cached_property
-    def _triplosensitivity_genes(self) -> list[entry_schemas.HiGeneEntry]:
+    def get_triplosensitivity_genes(
+        self, overlap_type: enums.Overlap, valid_scores: list[int]
+    ) -> list[entry_schemas.HiGeneEntry]:
+        """
+        Get all HiGene entries with sufficient Triplosensitivity Score
+
+        Parameters
+        ----------
+        overlap_type : enums.Overlap
+            Type of overlap to consider.
+        valid_scores : list[int]
+            List of valid scores to consider. Entry scores are coerced to integers.
+
+        Returns
+        -------
+        list[entry_schemas.HiGeneEntry]
+            List of HiGene entries with sufficient Triplosensitivity Score
+        """
         return [
-            reg for reg in self._hi_gene if str(reg.get("Triplosensitivity Score", "")) in core.SUFFICIENT_TS_SCORES
+            g
+            for g in self._hi_gene
+            if "Triplosensitivity Score" in g
+            and g["Triplosensitivity Score"] not in core.INVALID_SCORES
+            and int(float(g["Triplosensitivity Score"])) in valid_scores
+            and self.cnv.is_overlapping(g["start"], g["end"], overlap_type)
         ]
 
-    @cached_property
-    def _haploinsufficient_genes(self) -> list[entry_schemas.HiGeneEntry]:
-        return [reg for reg in self._hi_gene if reg.get("Haploinsufficiency Score", None) in core.SUFFICIENT_HI_SCORES]
-
-    def get_triplosensitivity_regions(self, overlap_type: enums.OverlapType | None) -> list[dict[str, Any]]:
-        """Get all HiRegion entries with sufficient Triplosensitivity Score"""
-        if not overlap_type:
-            return self._triplosensitivity_regions
-        else:
-            return [
-                reg
-                for reg in self._triplosensitivity_regions
-                if self.cnv.is_overlapping(reg["start"], reg["end"], overlap_type)
-            ]
-
-    def get_haploinsufficient_regions(self, overlap_type: enums.OverlapType | None) -> list[dict[str, Any]]:
-        """Get all HiRegion entries with sufficient Haploinsufficiency Score"""
-        if not overlap_type:
-            return self._haploinsufficient_regions
-        else:
-            return [
-                reg
-                for reg in self._haploinsufficient_regions
-                if self.cnv.is_overlapping(reg["start"], reg["end"], overlap_type)
-            ]
-
-    def get_triplosensitivity_genes(self, overlap_type: enums.OverlapType | None) -> list[entry_schemas.HiGeneEntry]:
-        """Get all HiGene entries with sufficient Triplosensitivity Score"""
-        if not overlap_type:
-            return self._triplosensitivity_genes
-        else:
-            return [
-                gene
-                for gene in self._triplosensitivity_genes
-                if self.cnv.is_overlapping(gene["start"], gene["end"], overlap_type)
-            ]
-
-    def get_triplosensitivity_gene_names(self, overlap_type: enums.OverlapType | None) -> list[str]:
+    def get_triplosensitivity_gene_names(self, overlap_type: enums.Overlap, valid_scores: list[int]) -> list[str]:
         """Get names of genes with sufficient Triplosensitivity Score"""
-        return [gene["Gene Symbol"] for gene in self.get_triplosensitivity_genes(overlap_type)]
+        return [gene["Gene Symbol"] for gene in self.get_triplosensitivity_genes(overlap_type, valid_scores)]
 
-    def get_haploinsufficient_genes(self, overlap_type: enums.OverlapType | None) -> list[entry_schemas.HiGeneEntry]:
-        """Get all HiGene entries with sufficient Haploinsufficiency Score"""
-        if not overlap_type:
-            return self._haploinsufficient_genes
-        else:
-            return [
-                gene
-                for gene in self._haploinsufficient_genes
-                if self.cnv.is_overlapping(gene["start"], gene["end"], overlap_type)
-            ]
+    def get_haploinsufficient_genes(
+        self, overlap_type: enums.Overlap, valid_scores: list[int]
+    ) -> list[entry_schemas.HiGeneEntry]:
+        """
+        Get all HiGene entries with sufficient Haploinsufficiency Score
 
-    def get_haploinsufficient_gene_names(self, overlap_type: enums.OverlapType | None) -> list[str]:
+        Parameters
+        ----------
+        overlap_type : enums.Overlap
+            Type of overlap to consider.
+        valid_scores : list[int]
+            List of valid scores to consider. Entry scores are coerced to integers.
+
+        Returns
+        -------
+        list[entry_schemas.HiGeneEntry]
+            List of HiGene entries with sufficient Haploinsufficiency Score
+        """
+        return [
+            g
+            for g in self._hi_gene
+            if "Haploinsufficiency Score" in g
+            and g["Haploinsufficiency Score"] not in core.INVALID_SCORES
+            and int(float(g["Haploinsufficiency Score"])) in valid_scores
+            and self.cnv.is_overlapping(g["start"], g["end"], overlap_type)
+        ]
+
+    def get_haploinsufficient_gene_names(self, overlap_type: enums.Overlap, valid_scores: list[int]) -> list[str]:
         """Get names of genes with sufficient Haploinsufficiency Score"""
-        return [gene["Gene Symbol"] for gene in self.get_haploinsufficient_genes(overlap_type)]
+        return [gene["Gene Symbol"] for gene in self.get_haploinsufficient_genes(overlap_type, valid_scores)]
 
     def get_common_variability_regions(self) -> list[CommonVariabilityRegion]:
         """
@@ -346,9 +380,14 @@ class Annotation:
                 results.append({"population": region["population"], "frequency": freq})
         return results
 
-    def get_benign_cnvs_gs_outer(self) -> list[dict[str, Any]]:
+    def get_benign_cnvs_gs_outer(self, frequency_threshold: float) -> list[entry_schemas.BenignCNVGSDBEntry]:
         """
-        Get Benign CNV GS outer entries with no defined frequency or frequency high enough
+        Get Benign CNV GS outer entries with no defined frequency or higher than the threshold
+
+        Parameters
+        ----------
+        frequency_threshold : float
+            Minimum frequency for a benign CNV GS outer entry to be considered
 
         Returns
         -------
@@ -363,10 +402,10 @@ class Annotation:
         cnvs = [
             cnv
             for cnv in self._benign_cnv_gs_outer
-            if cnv.get("frequency", "") == ""
-            or math.isnan(cnv["frequency"])
-            or float(cnv["frequency"]) >= float(core.MIN_FREQUENCY_BENIGN)
-        ]
+            if "frequency" not in cnv
+            or (isinstance(cnv["frequency"], str) and cnv["frequency"].lower() == "nan")
+            or float(cnv["frequency"]) >= frequency_threshold
+        ]  # TODO check possible types for frequency in schema
 
         if self.cnv.is_duplication:
             return [cnv for cnv in cnvs if self.cnv.matches_cnv_type_or_both(cnv["cnv_type"])]
@@ -394,8 +433,8 @@ class Annotation:
         results: list[TranscriptRegion] = []
 
         is_forward = gene_info["strand"] == "+"
-        transcripts = [
-            t for t in gene_info.get("transcript", []) if self.cnv.get_overlap_with_region(t["start"], t["end"]) > 0
+        transcripts: list[entry_schemas.TranscriptEntry] = [
+            t for t in gene_info.get("transcript", {}) if self.cnv.get_overlap_with_region(t["start"], t["end"]) > 0
         ]
 
         for transcript in transcripts:
@@ -502,17 +541,18 @@ class Annotation:
 
         for gene in self.get_genes():
             gene_type = gene.get("gene_type", "")
-            if GenesDBGeneTypes.PROTEIN_CODING in gene_type:
+            if enums.GenesDBGeneType.PROTEIN_CODING in gene_type:
                 counter["protein_coding"] += 1
-            elif GenesDBGeneTypes.PSEUDOGENE in gene_type:
+            # NOTE there are any subtype of pseudogenes like 'unprocessed_pseudogene'  or 'IG_V_pseudogene'
+            elif enums.GenesDBGeneType.PSEUDOGENE in gene_type:
                 counter["pseudogenes"] += 1
-            elif GenesDBGeneTypes.LINC_RNA in gene_type:
+            elif enums.GenesDBGeneType.LINC_RNA in gene_type:
                 counter["lncrna"] += 1
-            elif GenesDBGeneTypes.R_RNA in gene_type:
+            elif enums.GenesDBGeneType.R_RNA in gene_type:
                 counter["rrna"] += 1
-            elif GenesDBGeneTypes.S_NRNA in gene_type:
+            elif enums.GenesDBGeneType.S_NRNA in gene_type:
                 counter["snrna"] += 1
-            elif GenesDBGeneTypes.MIRNA in gene_type:
+            elif enums.GenesDBGeneType.MIRNA in gene_type:
                 counter["mirna"] += 1
             else:
                 counter["other"] += 1
@@ -550,29 +590,29 @@ class Annotation:
         }
         regulatory_types = [region["type"] for region in self._regulatory]
         for reg_type in regulatory_types:
-            if reg_type == RegulatoryTypes.ENHANCER:
+            if reg_type == enums.RegulatoryType.ENHANCER:
                 counter["enhancer"] += 1
-            elif reg_type == RegulatoryTypes.PROMOTER:
+            elif reg_type == enums.RegulatoryType.PROMOTER:
                 counter["promoter"] += 1
-            elif reg_type == RegulatoryTypes.OPEN_CHROMATIN_REGION:
+            elif reg_type == enums.RegulatoryType.OPEN_CHROMATIN_REGION:
                 counter["open_chromatin_region"] += 1
-            elif reg_type == RegulatoryTypes.CTCF_BINDING_SITE:
+            elif reg_type == enums.RegulatoryType.CTCF_BINDING_SITE:
                 counter["CTCF_binding_site"] += 1
-            elif reg_type == RegulatoryTypes.TF_BINDING_SITE:
+            elif reg_type == enums.RegulatoryType.TF_BINDING_SITE:
                 counter["TF_binding_site"] += 1
-            elif reg_type == RegulatoryTypes.CURATED:
+            elif reg_type == enums.RegulatoryType.CURATED:
                 counter["curated"] += 1
-            elif reg_type == RegulatoryTypes.FLANKING_REGION:
+            elif reg_type == enums.RegulatoryType.FLANKING_REGION:
                 counter["flanking_region"] += 1
-            elif reg_type == RegulatoryTypes.SILENCER:
+            elif reg_type == enums.RegulatoryType.SILENCER:
                 counter["silencer"] += 1
-            elif reg_type == RegulatoryTypes.TRANSCRIPTIONAL_CIS_REGULATORY_REGION:
+            elif reg_type == enums.RegulatoryType.TRANSCRIPTIONAL_CIS_REGULATORY_REGION:
                 counter["transcriptional_cis_regulatory_region"] += 1
-            elif reg_type == RegulatoryTypes.DNASE_I_HYPERSENSITIVE_SITE:
+            elif reg_type == enums.RegulatoryType.DNASE_I_HYPERSENSITIVE_SITE:
                 counter["DNase_I_hypersensitive_site"] += 1
-            elif reg_type == RegulatoryTypes.ENHANCER_BLOCKING_ELEMENT:
+            elif reg_type == enums.RegulatoryType.ENHANCER_BLOCKING_ELEMENT:
                 counter["enhancer_blocking_element"] += 1
-            elif reg_type == RegulatoryTypes.TATA_BOX:
+            elif reg_type == enums.RegulatoryType.TATA_BOX:
                 counter["TATA_box"] += 1
             else:
                 counter["other"] += 1

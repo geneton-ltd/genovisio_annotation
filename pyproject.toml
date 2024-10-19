@@ -11,10 +11,10 @@ pandas = ">=2.2"
 pymongo = "==4.8"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^6.0.0"
+pytest = "*"
 
 [tool.poetry.scripts]
-annotate = "annotation.annotation:main"
+annotate = "annotation.main:main"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,0 +1,115 @@
+{
+  "cnv": {
+    "chr": "chr1",
+    "start": 10000,
+    "end": 20000,
+    "cnv_type": "gain",
+    "length": 10000,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  },
+  "_benign_cnv": [],
+  "_benign_cnv_gs_inner": [],
+  "_benign_cnv_gs_outer": [],
+  "_regulatory": [],
+  "_hi_gene": [
+    {
+      "_id": "test1",
+      "Gene ID": 1,
+      "cytoBand": "test",
+      "Genomic Location": "chr1:12000-13000",
+      "Haploinsufficiency Score": 40.0,
+      "Haploinsufficiency Description": "Not sensitive",
+      "Triplosensitivity Score": "0",
+      "Triplosensitivity Description": "No evidence",
+      "Date Last Evaluated": "test",
+      "start": 12000,
+      "end": 13000,
+      "chromosome": "chr1",
+      "Gene Symbol": "test1"
+
+  },
+    {
+      "_id": "test2",
+      "Gene ID": 2,
+      "cytoBand": "test",
+      "Genomic Location": "chr1:12000-13000",
+      "Haploinsufficiency Score": 2.0,
+      "Haploinsufficiency Description": "Some evidence",
+      "Triplosensitivity Score": "3",
+      "Triplosensitivity Description": "Sufficient evidence",
+      "Date Last Evaluated": "test",
+      "start": 12000,
+      "end": 13000,
+      "chromosome": "chr1",
+      "Gene Symbol": "test2"
+
+  },
+  {
+    "_id": "test3",
+    "Gene ID": 3,
+    "cytoBand": "test",
+    "Genomic Location": "chr1:12000-13000",
+    "Haploinsufficiency Score": 3.0,
+    "Haploinsufficiency Description": "Sufficient evidence",
+    "Triplosensitivity Score": "Not yet evaluated",
+    "Triplosensitivity Description": "Not yet evaluated",
+    "Date Last Evaluated": "test",
+    "start": 12000,
+    "end": 13000,
+    "chromosome": "chr1",
+      "Gene Symbol": "test3"
+
+},
+{
+  "_id": "test4",
+  "Gene ID": 4,
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 30,
+  "Haploinsufficiency Description": "Associated with autosomal recessive condition",
+  "Triplosensitivity Score": "1.0",
+  "Triplosensitivity Description": "Test",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1",
+      "Gene Symbol": "test4"
+
+},
+{
+  "_id": "test5",
+  "Gene ID": 5,
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 1,
+  "Haploinsufficiency Description": "Little evidence",
+  "Triplosensitivity Score": "nan",
+  "Triplosensitivity Description": "nan",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1",
+  "Gene Symbol": "test5"
+
+},
+{
+  "_id": "test6",
+  "Gene ID": 6,
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 0,
+  "Haploinsufficiency Description": "No evidence",
+  "Triplosensitivity Score": "",
+  "Triplosensitivity Description": "",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1",
+  "Gene Symbol": "test6"
+}
+  ],
+  "_hi_region": [],
+  "_genes": [],
+  "_gnomad": []
+}
