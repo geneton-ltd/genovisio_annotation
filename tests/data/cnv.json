@@ -7,5 +7,13 @@
     "length": 10000,
     "name": "test_name",
     "cytogenetic_position": "test"
-  }
+  },
+  "_benign_cnv": [],
+  "_benign_cnv_gs_inner": [],
+  "_benign_cnv_gs_outer": [],
+  "_regulatory": [],
+  "_hi_gene": [],
+  "_hi_region": [],
+  "_genes": [],
+  "_gnomad": []
 }

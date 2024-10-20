@@ -1,0 +1,51 @@
+site_name: CNV Annotation package
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.top # back to top button
+    - search.highlight
+nav:
+  - Home: index.md
+  - API docs:
+      - Annotation: annotation.md
+      - CNVRegion: cnv_region_annot.md
+      - outputs: outputs.md
+      - enums: enums.md
+
+repo_url: https://github.com/geneton-ltd/genovisio_annotation
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [annotation]
+          options:
+            docstring_style: numpy
+            show_source: false

@@ -1,5 +1,5 @@
 import annotation
-from annotation.src.schemas import CNVRegionAnnotation
+from annotation.src.annotation import CNVRegionAnnotation
 
 
 def test_cnv(annotation_cnv: CNVRegionAnnotation):
@@ -25,28 +25,28 @@ def test_cnv_has_start_in_region(annotation_cnv: CNVRegionAnnotation):
 
 def test_cnv_is_overlapping(annotation_cnv: CNVRegionAnnotation):
     region1 = (9000, 11000)
-    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.all)
-    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.inside_only)
-    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.partial_both)
-    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.partial_end)
-    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.partial_start)
-    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.OverlapType.span_whole_only)
+    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.ANY)
+    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.CONTAINED_INSIDE)
+    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.START_OR_END)
+    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.END_ONLY)
+    assert annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.START_ONLY)
+    assert not annotation_cnv.is_overlapping(region1[0], region1[1], annotation.enums.Overlap.SPAN_ENTIRE)
 
     region2 = (9000, 21000)
-    assert annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.all)
-    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.inside_only)
-    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.partial_both)
-    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.partial_end)
-    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.partial_start)
-    assert annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.OverlapType.span_whole_only)
+    assert annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.ANY)
+    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.CONTAINED_INSIDE)
+    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.START_OR_END)
+    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.END_ONLY)
+    assert not annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.START_ONLY)
+    assert annotation_cnv.is_overlapping(region2[0], region2[1], annotation.enums.Overlap.SPAN_ENTIRE)
 
     region3 = (12000, 15000)
-    assert annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.all)
-    assert annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.inside_only)
-    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.partial_both)
-    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.partial_end)
-    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.partial_start)
-    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.OverlapType.span_whole_only)
+    assert annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.ANY)
+    assert annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.CONTAINED_INSIDE)
+    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.START_OR_END)
+    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.END_ONLY)
+    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.START_ONLY)
+    assert not annotation_cnv.is_overlapping(region3[0], region3[1], annotation.enums.Overlap.SPAN_ENTIRE)
 
 
 def test_cnv_get_overlap_with_region(annotation_cnv: CNVRegionAnnotation):

@@ -17,7 +17,7 @@ class GenovisioDB:
         self.client = pymongo.MongoClient(self.uri)
         self.db = self.client[self.name]
 
-    def find_intersections(self, collection_name: str, region: cnv_region.CNVRegion) -> list[dict[str, Any]]:
+    def find_intersections(self, collection_name: str, region: cnv_region.CNVRegion) -> list[Any]:
         """
         Find intersecting items within a single collection using indexed queries.
         """

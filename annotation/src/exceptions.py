@@ -66,3 +66,11 @@ class UnknownOverlapTypeError(GenovisioAnnotationError):
     def __init__(self, overlap_type: str, allowed_types: list[str]):
         message = f"{overlap_type=} is not among {allowed_types=}"
         super().__init__(message)
+
+
+class InvalidJSONAnnotationError(GenovisioAnnotationError):
+    """Exception is raised when the JSON is not a valid annotation."""
+
+    def __init__(self, json_file: str, err: str):
+        message = f"{json_file=} does not contain a valid annotation of this version. KeyError: {err}"
+        super().__init__(message)

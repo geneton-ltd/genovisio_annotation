@@ -1,0 +1,119 @@
+{
+  "cnv": {
+    "chr": "chr22",
+    "start": 10000,
+    "end": 20000,
+    "cnv_type": "gain",
+    "length": 10000,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  },
+  "_benign_cnv": [],
+  "_benign_cnv_gs_inner": [],
+  "_benign_cnv_gs_outer": [],
+  "_regulatory": [],
+  "_hi_gene": [],
+  "_hi_region": [],
+  "_genes": [
+    {
+      "_id": "test1",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 9000,
+      "end": 16000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test",
+      "gene_id": "test",
+      "gene_type": "transcribed_unprocessed_pseudogene",
+      "gene_name": "test1",
+      "level": "1",
+      "hgnc_id": "test",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test",
+      "full_name": "test",
+      "alternative_names": [
+          "test1"
+      ],
+      "external": {},
+      "pathways": [],
+      "function": {},
+      "expression": {},
+      "conservancy": {},
+      "phenotype": {},
+      "AnnotSV": {
+          "omim_phenotype": [
+              "[Gamma-glutamyltransferase, familial high serum], 137181 (2)"
+          ]
+      },
+      "transcript": []
+    },
+    {
+      "_id": "test2",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 11000,
+      "end": 12000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test",
+      "gene_id": "test",
+      "gene_type": "lncRNA",
+      "gene_name": "test2",
+      "level": "1",
+      "hgnc_id": "test",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test",
+      "full_name": "test",
+      "alternative_names": [
+          "test"
+      ],
+      "external": {},
+      "pathways": [],
+      "function": {},
+      "expression": {},
+      "conservancy": {},
+      "phenotype": {},
+      "AnnotSV": {
+        "omim_morbid_gene": "yes",
+        "omim_phenotype": [
+          "Noonan syndrome 13, 619087 (3) AD"
+        ]
+      },
+      "transcript": []
+    },
+    {
+      "_id": "test3",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 14000,
+      "end": 15000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test",
+      "gene_id": "test",
+      "gene_type": "protein_coding",
+      "gene_name": "test3",
+      "level": "1",
+      "hgnc_id": "test",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test",
+      "full_name": "test",
+      "alternative_names": [
+          "test"
+      ],
+      "external": {},
+      "pathways": [],
+      "function": {},
+      "expression": {},
+      "conservancy": {},
+      "phenotype": {},
+      "AnnotSV": {},
+      "transcript": []
+    }
+  ],
+  "_gnomad": []
+}

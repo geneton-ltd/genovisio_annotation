@@ -4,7 +4,7 @@ import gzip
 import json
 from dataclasses import asdict
 
-from annotation.src import cnv_region, collections, core, schemas
+from annotation.src import annotation, cnv_region, collections, core
 
 
 class _CollectionName(enum.StrEnum):
@@ -21,13 +21,13 @@ class _CollectionName(enum.StrEnum):
         return [item.value for item in self.__class__]
 
 
-def get_whole_annotation(input_str: str, mongodb_uri: str, db_name: str) -> schemas.Annotation:
+def get_whole_annotation(input_str: str, mongodb_uri: str, db_name: str) -> annotation.Annotation:
     region = cnv_region.CNVRegion.build_from_string(input_str)
     genovisio_db = collections.GenovisioDB(mongodb_uri, db_name)
     results = {
         collection_name: genovisio_db.find_intersections(collection_name, region) for collection_name in _CollectionName
     }
-    cnv_annotation = schemas.CNVRegionAnnotation(
+    cnv_annotation = annotation.CNVRegionAnnotation(
         chr=region.chr,
         start=region.start,
         end=region.end,
@@ -37,7 +37,7 @@ def get_whole_annotation(input_str: str, mongodb_uri: str, db_name: str) -> sche
         cytogenetic_position=region.cytogenetic_position,
     )
 
-    return schemas.Annotation(
+    return annotation.Annotation(
         cnv=cnv_annotation,
         _benign_cnv=results[_CollectionName.BENIGN_CNV],
         _benign_cnv_gs_inner=results[_CollectionName.BENIGN_CNV_GS_INNER],

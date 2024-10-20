@@ -1,0 +1,106 @@
+{
+  "cnv": {
+    "chr": "chr1",
+    "start": 10000,
+    "end": 20000,
+    "cnv_type": "gain",
+    "length": 10000,
+    "name": "test_name",
+    "cytogenetic_position": "test"
+  },
+  "_benign_cnv": [],
+  "_benign_cnv_gs_inner": [],
+  "_benign_cnv_gs_outer": [],
+  "_regulatory": [],
+  "_hi_gene": [],
+  "_hi_region": [
+    {
+      "_id": "test1",
+      "ISCA Region Name": "test_region_name1",
+      "cytoBand": "test",
+      "Genomic Location": "chr1:12000-13000",
+      "Haploinsufficiency Score": 40.0,
+      "Haploinsufficiency Description": "Not sensitive",
+      "Triplosensitivity Score": "0",
+      "Triplosensitivity Description": "No evidence",
+      "Date Last Evaluated": "test",
+      "start": 12000,
+      "end": 13000,
+      "chromosome": "chr1"
+  },
+    {
+      "_id": "test2",
+      "ISCA Region Name": "test_region_name2",
+      "cytoBand": "test",
+      "Genomic Location": "chr1:12000-13000",
+      "Haploinsufficiency Score": 2.0,
+      "Haploinsufficiency Description": "Some evidence",
+      "Triplosensitivity Score": "3",
+      "Triplosensitivity Description": "Sufficient evidence",
+      "Date Last Evaluated": "test",
+      "start": 12000,
+      "end": 13000,
+      "chromosome": "chr1"
+  },
+  {
+    "_id": "test3",
+    "ISCA Region Name": "test_region_name3",
+    "cytoBand": "test",
+    "Genomic Location": "chr1:12000-13000",
+    "Haploinsufficiency Score": 3.0,
+    "Haploinsufficiency Description": "Sufficient evidence",
+    "Triplosensitivity Score": "Not yet evaluated",
+    "Triplosensitivity Description": "Not yet evaluated",
+    "Date Last Evaluated": "test",
+    "start": 12000,
+    "end": 13000,
+    "chromosome": "chr1"
+},
+{
+  "_id": "test4",
+  "ISCA Region Name": "test_region_name4",
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 30,
+  "Haploinsufficiency Description": "Associated with autosomal recessive condition",
+  "Triplosensitivity Score": "1.0",
+  "Triplosensitivity Description": "Test",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1"
+},
+{
+  "_id": "test5",
+  "ISCA Region Name": "test_region_name5",
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 1,
+  "Haploinsufficiency Description": "Little evidence",
+  "Triplosensitivity Score": "nan",
+  "Triplosensitivity Description": "nan",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1"
+},
+{
+  "_id": "test6",
+  "ISCA Region Name": "test_region_name6",
+  "cytoBand": "test",
+  "Genomic Location": "chr1:12000-13000",
+  "Haploinsufficiency Score": 0,
+  "Haploinsufficiency Description": "No evidence",
+  "Triplosensitivity Score": "",
+  "Triplosensitivity Description": "",
+  "Date Last Evaluated": "test",
+  "start": 12000,
+  "end": 13000,
+  "chromosome": "chr1"
+}
+  ],
+  "_genes": [],
+  "_gnomad": []
+}
+
+
