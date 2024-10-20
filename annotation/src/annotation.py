@@ -39,15 +39,25 @@ class RegulatoryTypesCounter(TypedDict):
 
 
 class TranscriptRegion(TypedDict):
+    """Representation of a transcript region"""
+
     length: int
+    """ Length of the transcript """
     identifier: str
+    """ Identifier of the transcript """
     cds_overlaps: list[int]
+    """ List of lengths of CDS overlaps, in the number of bases """
     five_prime_utr_overlaps: list[int]
+    """ List of lengths of prime 5' UTR overlaps, in the number of bases """
     three_prime_utr_overlaps: list[int]
+    """ List of lengths of prime 3' UTR overlaps, in the number of bases """
 
     flag_five_inside: bool
+    """ Flag indicating if the transcript start is inside the CNV region. Properly handling +/- strands"""
     flag_three_inside: bool
+    """ Flag indicating if the transcript end is inside the CNV region. Properly handling +/- strands"""
     flag_contained: bool
+    """ Flag indicating if the transcript is completely contained inside the CNV region """
 
 
 class CommonVariabilityRegion(TypedDict):
@@ -66,24 +76,44 @@ def _normalize_type(sv_type: str) -> enums.CNVType:
 @dataclass
 class CNVRegionAnnotation:
     chr: str
+    """ Chromosome of the CNV region in the format like `chr1`"""
     start: int
+    """ Start position of the CNV region """
     end: int
+    """ End position of the CNV region """
     cnv_type: enums.CNVType
+    """ Type of the CNV region """
     length: int
+    """ Length of the CNV region """
     name: str
+    """ Name of the CNV region given as `{chr}_{start}_{end}_{cnv_type}`"""
     cytogenetic_position: str
+    """ Cytogenetic position of the CNV region, e.g.: `q15.1`"""
 
     @property
     def is_duplication(self) -> bool:
+        """Check if the CNV region is a duplication"""
         return self.cnv_type == enums.CNVType.GAIN
 
     @property
     def genomic_coord(self) -> str:
-        """Get the genomic coordinates in the format chr:start-end"""
+        """Genomic coordinates in the format `chr:start-end`"""
         return f"{self.chr}:{self.start}-{self.end}"
 
     def matches_cnv_type_or_both(self, benign_cnv_type: str) -> bool:
-        """Check whether benign_cnv matches the CNV type or is a combination of both"""
+        """
+        Check whether benign_cnv matches the CNV type or is a combination of both
+
+        Parameters
+        ----------
+        benign_cnv_type : str
+            Type of CNV as given by entry in benign CNV DB
+
+        Returns
+        -------
+        bool
+            True if benign_cnv_type matches the CNV type or is a combination of both, False otherwise
+        """
         try:
             return _normalize_type(benign_cnv_type) == self.cnv_type
         except exceptions.CNVTypeNormalizationError:
@@ -131,6 +161,7 @@ class CNVRegionAnnotation:
 @dataclass(frozen=True)
 class Annotation:
     cnv: CNVRegionAnnotation
+    """ See [`CNVRegionAnnotation`][src.annotation.CNVRegionAnnotation] """
     _benign_cnv: list[entry_schemas.BenignCNVDBEntry]
     _benign_cnv_gs_inner: list[entry_schemas.BenignCNVGSDBEntry]
     _benign_cnv_gs_outer: list[entry_schemas.BenignCNVGSDBEntry]

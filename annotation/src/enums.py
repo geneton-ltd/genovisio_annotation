@@ -2,19 +2,29 @@ import enum
 
 
 class CNVType(enum.StrEnum):
+    """Types of CNV regions."""
+
     LOSS = "loss"
+    """ Represent a deletion of a region """
     GAIN = "gain"
+    """ Represent a duplication of a region """
 
 
 class Overlap(enum.Enum):
     """Possible types of overlap between two regions."""
 
-    ANY = 0  # any overlap between regions
-    SPAN_ENTIRE = 1  # the second region overlaps the entire first region
-    START_ONLY = 2  # the second region overlap only the start of the second region (and not end)
-    END_ONLY = 3  # the second region overlap only the end of the second region (and not start)
-    START_OR_END = 4  # the second region overlap either only the end or the start of the second region
-    CONTAINED_INSIDE = 5  # the second region is inside the entire first region
+    ANY = enum.auto()
+    """ any overlap between regions """
+    SPAN_ENTIRE = enum.auto()
+    """ the second region overlaps the entire first region """
+    START_ONLY = enum.auto()
+    " the second region overlap only the start of the second region (and not end) "
+    END_ONLY = enum.auto()
+    " the second region overlap only the end of the second region (and not start) "
+    START_OR_END = enum.auto()
+    " the second region overlap either only the end or the start of the second region "
+    CONTAINED_INSIDE = enum.auto()
+    " the second region is inside the entire first region "
 
 
 class RegulatoryType(enum.StrEnum):

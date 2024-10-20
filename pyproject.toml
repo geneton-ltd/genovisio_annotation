@@ -12,9 +12,13 @@ pymongo = "==4.8"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
+mkdocs = ">=1.6.0"
+mkdocstrings-python = ">=0.26"
+mkdocs-material = "*"
 
 [tool.poetry.scripts]
 annotate = "annotation.main:main"
+
 
 [build-system]
 requires = ["poetry-core"]
