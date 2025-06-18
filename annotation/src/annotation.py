@@ -380,6 +380,27 @@ class Annotation:
         """Get names of genes with sufficient Haploinsufficiency Score"""
         return [gene["Gene Symbol"] for gene in self.get_haploinsufficient_genes(overlap_type, valid_scores)]
 
+    def get_hi_or_ts_genes_url(self, hi_or_genes_list: list[str]) -> list[str]:
+
+        "Get URLs for genes that are in list of Haploinsufficient or Triplosensitive genes"
+        data = self._genes
+
+        hi_or_ts_gene_mane_url = []
+
+        for hi_or_ts_gene_mane in hi_or_genes_list:
+
+            for i in range(len(data)):
+
+                if data[i]['gene_name'] == hi_or_ts_gene_mane:
+                    if 'external' in data[i] and 'OMIM' in data[i]['external']:
+                        omim_url = data[i]['external']['OMIM']['url']
+                        hi_or_ts_gene_mane_url.append(omim_url)
+                    else:
+                        print("No OMIM information available for this gene.")
+                    break
+
+        return hi_or_ts_gene_mane_url
+
     def get_common_variability_regions(self) -> list[CommonVariabilityRegion]:
         """
         Get GnomAD regions that intersect with the CNV and are in the specified populations
