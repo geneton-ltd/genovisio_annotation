@@ -19,7 +19,9 @@ class GenesDBGeneTypesCounter(TypedDict):
 
 class AnnotatedGenesList(TypedDict):
     morbid_genes: list[str]
+    morbid_genes_urls: list[str]
     associated_with_disease: list[str]
+    associated_with_disease_urls: list[str]
 
 
 class RegulatoryTypesCounter(TypedDict):
@@ -242,19 +244,24 @@ class Annotation:
         -------
         AnnotatedGenesList
             Dictionary with two lists of gene names: 'morbid_genes' and 'associated_with_disease'
+            and two list s of URLs: 'morbid_genes_url' and 'associated_with_disease_url'.
         """
         genes = self.get_genes()
         annot_genes: AnnotatedGenesList = {
             "morbid_genes": [],
+            "morbid_genes_urls": [],
             "associated_with_disease": [],
+            "associated_with_disease_urls": [],
         }
 
         for gene in genes:
             if "AnnotSV" in gene:
                 if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
                     annot_genes["morbid_genes"].append(gene["gene_name"])
+                    annot_genes["morbid_genes_urls"].append(gene["external"]["OMIM"]["url"])
                 if "omim_phenotype" in gene["AnnotSV"]:
                     annot_genes["associated_with_disease"].append(gene["gene_name"])
+                    annot_genes["associated_with_disease_urls"].append(gene["external"]["OMIM"]["url"])
         return annot_genes
 
     def get_triplosensitivity_regions(

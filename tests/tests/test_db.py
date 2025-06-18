@@ -14,7 +14,9 @@ def test_genes_annotSV():
 
     genes = annot.get_annotated_genes()
     assert genes["morbid_genes"] == ["test2"]
+    assert genes["morbid_genes_urls"] == ["https://www.omim.org/entry/test2"]
     assert genes["associated_with_disease"] == ["test1", "test2"]
+    assert genes["associated_with_disease_urls"] == ["https://www.omim.org/entry/test1", "https://www.omim.org/entry/test2"]
 
 
 def test_get_genes():

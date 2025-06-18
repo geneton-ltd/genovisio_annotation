@@ -36,7 +36,12 @@
       "alternative_names": [
           "test1"
       ],
-      "external": {},
+      "external": {
+        "OMIM": {
+          "identifier": "618355",
+          "url": "https://www.omim.org/entry/test1"
+        }
+      },
       "pathways": [],
       "function": {},
       "expression": {},
@@ -70,7 +75,12 @@
       "alternative_names": [
           "test"
       ],
-      "external": {},
+      "external": {
+        "OMIM": {
+          "identifier": "618355",
+          "url": "https://www.omim.org/entry/test2"
+        }
+      },
       "pathways": [],
       "function": {},
       "expression": {},
@@ -105,7 +115,12 @@
       "alternative_names": [
           "test"
       ],
-      "external": {},
+      "external": {
+        "OMIM": {
+          "identifier": "618355",
+          "url": "https://www.omim.org/entry/test3"
+        }
+      },
       "pathways": [],
       "function": {},
       "expression": {},
