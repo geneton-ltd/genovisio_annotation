@@ -19,7 +19,9 @@ class GenesDBGeneTypesCounter(TypedDict):
 
 class AnnotatedGenesList(TypedDict):
     morbid_genes: list[str]
+    morbid_genes_urls: list[str]
     associated_with_disease: list[str]
+    associated_with_disease_urls: list[str]
 
 
 class RegulatoryTypesCounter(TypedDict):
@@ -242,19 +244,24 @@ class Annotation:
         -------
         AnnotatedGenesList
             Dictionary with two lists of gene names: 'morbid_genes' and 'associated_with_disease'
+            and two list s of URLs: 'morbid_genes_url' and 'associated_with_disease_url'.
         """
         genes = self.get_genes()
         annot_genes: AnnotatedGenesList = {
             "morbid_genes": [],
+            "morbid_genes_urls": [],
             "associated_with_disease": [],
+            "associated_with_disease_urls": [],
         }
 
         for gene in genes:
             if "AnnotSV" in gene:
                 if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
                     annot_genes["morbid_genes"].append(gene["gene_name"])
+                    annot_genes["morbid_genes_urls"].append(gene["external"]["OMIM"]["url"])
                 if "omim_phenotype" in gene["AnnotSV"]:
                     annot_genes["associated_with_disease"].append(gene["gene_name"])
+                    annot_genes["associated_with_disease_urls"].append(gene["external"]["OMIM"]["url"])
         return annot_genes
 
     def get_triplosensitivity_regions(
@@ -372,6 +379,28 @@ class Annotation:
     def get_haploinsufficient_gene_names(self, overlap_type: enums.Overlap, valid_scores: list[int]) -> list[str]:
         """Get names of genes with sufficient Haploinsufficiency Score"""
         return [gene["Gene Symbol"] for gene in self.get_haploinsufficient_genes(overlap_type, valid_scores)]
+
+    def get_hi_or_ts_genes_url(self, hi_or_genes_list: list[str]) -> list[str]:
+
+        "Get URLs for genes that are in list of Haploinsufficient or Triplosensitive genes"
+        data = self._genes
+
+        hi_or_ts_gene_mane_url = []
+
+        for hi_or_ts_gene_mane in hi_or_genes_list:
+
+            for i in range(len(data)):
+
+                if data[i]['gene_name'] == hi_or_ts_gene_mane:
+                    if 'external' in data[i] and 'OMIM' in data[i]['external']:
+                        omim_url = data[i]['external']['OMIM']['url']
+                        hi_or_ts_gene_mane_url.append(omim_url)
+                    else:
+                        print("No OMIM information available for this gene.")
+                        hi_or_ts_gene_mane_url.append('no_url')
+                    break
+
+        return hi_or_ts_gene_mane_url
 
     def get_common_variability_regions(self) -> list[CommonVariabilityRegion]:
         """

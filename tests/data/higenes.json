@@ -36,7 +36,7 @@
       "Genomic Location": "chr1:12000-13000",
       "Haploinsufficiency Score": 2.0,
       "Haploinsufficiency Description": "Some evidence",
-      "Triplosensitivity Score": "3",
+      "Triplosensitivity Score": "2.0",
       "Triplosensitivity Description": "Sufficient evidence",
       "Date Last Evaluated": "test",
       "start": 12000,
@@ -52,7 +52,7 @@
     "Genomic Location": "chr1:12000-13000",
     "Haploinsufficiency Score": 3.0,
     "Haploinsufficiency Description": "Sufficient evidence",
-    "Triplosensitivity Score": "Not yet evaluated",
+    "Triplosensitivity Score": "3.0",
     "Triplosensitivity Description": "Not yet evaluated",
     "Date Last Evaluated": "test",
     "start": 12000,
@@ -110,6 +110,73 @@
 }
   ],
   "_hi_region": [],
-  "_genes": [],
+  "_genes": [
+    {
+      "_id": "test2",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 9000,
+      "end": 16000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test2",
+      "gene_id": "test2",
+      "gene_type": "transcribed_unprocessed_pseudogene",
+      "gene_name": "test2",
+      "level": "1",
+      "hgnc_id": "test2",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test2",
+      "full_name": "test2-full_name",
+      "alternative_names": [
+          "test2"
+      ],
+      "external": {
+        "OMIM": {
+          "identifier": "test2",
+          "url": "https://www.omim.org/entry/test2"
+        }
+      },
+      "AnnotSV": {
+          "omim_phenotype": [
+              "[Gamma-glutamyltransferase, familial high serum], 137181 (2)"
+          ]
+      }
+    },
+    {
+      "_id": "test3",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 9000,
+      "end": 16000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test3",
+      "gene_id": "test3",
+      "gene_type": "transcribed_unprocessed_pseudogene",
+      "gene_name": "test3",
+      "level": "1",
+      "hgnc_id": "test3",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test3",
+      "full_name": "test3-full_name",
+      "alternative_names": [
+          "test3"
+      ],
+      "external": {
+        "OMIM": {
+          "identifier": "test3",
+          "url": "https://www.omim.org/entry/test3"
+        }
+      },
+      "AnnotSV": {
+          "omim_phenotype": [
+              "[Gamma-glutamyltransferase, familial high serum], 137181 (2)"
+          ]
+      }
+    }
+  ],
   "_gnomad": []
 }
