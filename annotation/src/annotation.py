@@ -397,6 +397,7 @@ class Annotation:
                         hi_or_ts_gene_mane_url.append(omim_url)
                     else:
                         print("No OMIM information available for this gene.")
+                        hi_or_ts_gene_mane_url.append('no_url')
                     break
 
         return hi_or_ts_gene_mane_url

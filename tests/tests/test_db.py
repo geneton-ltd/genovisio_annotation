@@ -45,19 +45,16 @@ def test_count_genes():
 
 def test_hi_genes():
     annot = annotation.Annotation.load_from_json("tests/data/higenes.json")
-    print(len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [2, 3])))
-    print(len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [1, 2, 3])))
-    print(len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [3])))
 
     assert len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [2, 3])) == 2
     assert len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [1, 2, 3])) == 3
     assert len(annot.get_haploinsufficient_genes(annotation.enums.Overlap.ANY, [3])) == 1
 
-    assert len(annot.get_triplosensitivity_genes(annotation.enums.Overlap.ANY, [1, 2, 3])) == 2
-    assert len(annot.get_triplosensitivity_genes(annotation.enums.Overlap.ANY, [2, 3])) == 1
+    assert len(annot.get_triplosensitivity_genes(annotation.enums.Overlap.ANY, [1, 2, 3])) == 3
+    assert len(annot.get_triplosensitivity_genes(annotation.enums.Overlap.ANY, [2, 3])) == 2
     assert len(annot.get_triplosensitivity_genes(annotation.enums.Overlap.ANY, [3])) == 1
 
-    assert annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [3]) == ["test2"]
+    assert annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [3]) == ["test3"]
 
 def test_hi_genes_urls():
     annot = annotation.Annotation.load_from_json("tests/data/higenes.json")
@@ -68,6 +65,20 @@ def test_hi_genes_urls():
     assert hi_genes_urls == ["https://www.omim.org/entry/test2", "https://www.omim.org/entry/test3"]
 
     get_hi_genes_names = annot.get_haploinsufficient_gene_names(annotation.enums.Overlap.ANY, [1])
+    hi_genes_urls = annot.get_hi_or_ts_genes_url(get_hi_genes_names)
+
+    assert hi_genes_urls == []
+
+
+def test_ts_genes_urls():
+    annot = annotation.Annotation.load_from_json("tests/data/higenes.json")
+
+    get_hi_genes_names = annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [2, 3])
+    hi_genes_urls = annot.get_hi_or_ts_genes_url(get_hi_genes_names)
+
+    assert hi_genes_urls == ["https://www.omim.org/entry/test2", "https://www.omim.org/entry/test3"]
+
+    get_hi_genes_names = annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [1])
     hi_genes_urls = annot.get_hi_or_ts_genes_url(get_hi_genes_names)
 
     assert hi_genes_urls == []
