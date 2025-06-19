@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.2.0...v0.3.0) (2025-06-19)
+
+
+### Features
+
+* Add omim url list from morbid genes and HI/TS genes ([aa65afe](https://github.com/geneton-ltd/genovisio_annotation/commit/aa65afeb2567913544d2e247840d7ea1d54aa2ee))
+* Add url to omim to geenes which are in list of HI or TS genes ([c8e0b20](https://github.com/geneton-ltd/genovisio_annotation/commit/c8e0b209e84898072904732678fd70a6b9c13ce6))
+* Add url to omim to genes which are in list of TS genes ([9e33b2f](https://github.com/geneton-ltd/genovisio_annotation/commit/9e33b2fd63ee2effcf309f5ffd4b5012e7d09fde))
+* Get list of url accession to OMIM morbid genes and disease associated genes ([953ec0a](https://github.com/geneton-ltd/genovisio_annotation/commit/953ec0a11c7c91d0972c055673beb7e36ef6dab5))
+
 ## [0.2.0](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.1.0...v0.2.0) (2024-10-20)
 
 
