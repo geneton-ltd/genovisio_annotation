@@ -258,10 +258,29 @@ class Annotation:
             if "AnnotSV" in gene:
                 if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
                     annot_genes["morbid_genes"].append(gene["gene_name"])
-                    annot_genes["morbid_genes_urls"].append(gene["external"]["OMIM"]["url"])
+                    if "external" in gene:
+                        if "OMIM" in gene["external"]:
+                            if "url" in gene["external"]["OMIM"]:
+                                annot_genes["morbid_genes_urls"].append(gene["external"]["OMIM"]["url"])
+                            else:
+                                annot_genes["morbid_genes_urls"].append("no_url")
+                        else:
+                            annot_genes["morbid_genes_urls"].append("no_url")
+                    else:
+                        annot_genes["morbid_genes_urls"].append("no_url")
+
                 if "omim_phenotype" in gene["AnnotSV"]:
                     annot_genes["associated_with_disease"].append(gene["gene_name"])
-                    annot_genes["associated_with_disease_urls"].append(gene["external"]["OMIM"]["url"])
+                    if "external" in gene:
+                        if "OMIM" in gene["external"]:
+                            if "url" in gene["external"]["OMIM"]:
+                                annot_genes["associated_with_disease_urls"].append(gene["external"]["OMIM"]["url"])
+                            else:
+                                annot_genes["associated_with_disease_urls"].append("no_url")
+                        else:
+                                annot_genes["associated_with_disease_urls"].append("no_url")
+                    else:
+                        annot_genes["associated_with_disease_urls"].append("no_url")
         return annot_genes
 
     def get_triplosensitivity_regions(
@@ -392,11 +411,16 @@ class Annotation:
             for i in range(len(data)):
 
                 if data[i]['gene_name'] == hi_or_ts_gene_mane:
-                    if 'external' in data[i] and 'OMIM' in data[i]['external']:
-                        omim_url = data[i]['external']['OMIM']['url']
-                        hi_or_ts_gene_mane_url.append(omim_url)
+
+                    if 'external' in data[i]:
+                        if 'OMIM' in data[i]['external']:
+                            if 'url' in data[i]['external']['OMIM']:
+                                hi_or_ts_gene_mane_url.append(data[i]['external']['OMIM']['url'])
+                            else:
+                                hi_or_ts_gene_mane_url.append('no_url')
+                        else:
+                            hi_or_ts_gene_mane_url.append('no_url')
                     else:
-                        print("No OMIM information available for this gene.")
                         hi_or_ts_gene_mane_url.append('no_url')
                     break
 

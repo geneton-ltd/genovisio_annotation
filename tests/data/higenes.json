@@ -18,9 +18,9 @@
       "Gene ID": 1,
       "cytoBand": "test",
       "Genomic Location": "chr1:12000-13000",
-      "Haploinsufficiency Score": 40.0,
+      "Haploinsufficiency Score": 1.0,
       "Haploinsufficiency Description": "Not sensitive",
-      "Triplosensitivity Score": "0",
+      "Triplosensitivity Score": "1.0",
       "Triplosensitivity Description": "No evidence",
       "Date Last Evaluated": "test",
       "start": 12000,
@@ -68,7 +68,7 @@
   "Genomic Location": "chr1:12000-13000",
   "Haploinsufficiency Score": 30,
   "Haploinsufficiency Description": "Associated with autosomal recessive condition",
-  "Triplosensitivity Score": "1.0",
+  "Triplosensitivity Score": "140.0",
   "Triplosensitivity Description": "Test",
   "Date Last Evaluated": "test",
   "start": 12000,
@@ -82,7 +82,7 @@
   "Gene ID": 5,
   "cytoBand": "test",
   "Genomic Location": "chr1:12000-13000",
-  "Haploinsufficiency Score": 1,
+  "Haploinsufficiency Score": 40,
   "Haploinsufficiency Description": "Little evidence",
   "Triplosensitivity Score": "nan",
   "Triplosensitivity Description": "nan",
@@ -175,6 +175,34 @@
           "omim_phenotype": [
               "[Gamma-glutamyltransferase, familial high serum], 137181 (2)"
           ]
+      }
+    },
+    {
+      "_id": "test1",
+      "chromosome": "chr22",
+      "source": "HAVANA",
+      "start": 9000,
+      "end": 16000,
+      "strand": "-",
+      "phase": "",
+      "ID": "test",
+      "gene_id": "test",
+      "gene_type": "transcribed_unprocessed_pseudogene",
+      "gene_name": "test1",
+      "level": "1",
+      "hgnc_id": "test",
+      "tag": "overlapping_locus",
+      "havana_gene": "test",
+      "name": "test",
+      "full_name": "test",
+      "alternative_names": [
+          "test1"
+      ],
+      "external": {
+        "OMIM": {
+          "identifier": "618355"
+
+        }
       }
     }
   ],
