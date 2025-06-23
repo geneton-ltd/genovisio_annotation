@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "annotation"
-version = "0.3.0"
+version = "0.3.1"
 description = "CNV annotation tool"
 authors = ["Marcel Kucharik <marcel.kucharik@geneton.sk>", "Michaela Gaziova <michaela.gaziova@geneton.sk>", "Jozef Sitarcik <jozef.sitarcik@geneton.sk>"]
 readme = "README.md"

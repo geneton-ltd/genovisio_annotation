@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.3.0...v0.3.1) (2025-06-23)
+
+
+### Bug Fixes
+
+* case of omim URL does not exist in gene annotation ([dcb9d20](https://github.com/geneton-ltd/genovisio_annotation/commit/dcb9d206acb4f57774ba58f08ccf29c360684900))
+* case of omim URL does not exist in gene annotation ([f7acbad](https://github.com/geneton-ltd/genovisio_annotation/commit/f7acbad4a706c6738e0c5520069d9555decd2c6a))
+
 ## [0.3.0](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.2.0...v0.3.0) (2025-06-19)
 
 
