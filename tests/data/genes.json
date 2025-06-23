@@ -38,8 +38,7 @@
       ],
       "external": {
         "OMIM": {
-          "identifier": "618355",
-          "url": "https://www.omim.org/entry/test1"
+          "identifier": "618355"
         }
       },
       "pathways": [],
