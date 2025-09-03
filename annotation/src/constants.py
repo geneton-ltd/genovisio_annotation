@@ -24,3 +24,5 @@ ALLOWED_CHROMOSOMES = [
     "chrX",
     "chrY",
 ]
+
+UNKNOWN_URL = "no_url"
