@@ -278,7 +278,7 @@ class Annotation:
                             else:
                                 annot_genes["associated_with_disease_urls"].append("no_url")
                         else:
-                                annot_genes["associated_with_disease_urls"].append("no_url")
+                            annot_genes["associated_with_disease_urls"].append("no_url")
                     else:
                         annot_genes["associated_with_disease_urls"].append("no_url")
         return annot_genes
@@ -400,28 +400,24 @@ class Annotation:
         return [gene["Gene Symbol"] for gene in self.get_haploinsufficient_genes(overlap_type, valid_scores)]
 
     def get_hi_or_ts_genes_url(self, hi_or_genes_list: list[str]) -> list[str]:
-
         "Get URLs for genes that are in list of Haploinsufficient or Triplosensitive genes"
         data = self._genes
 
         hi_or_ts_gene_mane_url = []
 
         for hi_or_ts_gene_mane in hi_or_genes_list:
-
             for i in range(len(data)):
-
-                if data[i]['gene_name'] == hi_or_ts_gene_mane:
-
-                    if 'external' in data[i]:
-                        if 'OMIM' in data[i]['external']:
-                            if 'url' in data[i]['external']['OMIM']:
-                                hi_or_ts_gene_mane_url.append(data[i]['external']['OMIM']['url'])
+                if data[i]["gene_name"] == hi_or_ts_gene_mane:
+                    if "external" in data[i]:
+                        if "OMIM" in data[i]["external"]:
+                            if "url" in data[i]["external"]["OMIM"]:
+                                hi_or_ts_gene_mane_url.append(data[i]["external"]["OMIM"]["url"])
                             else:
-                                hi_or_ts_gene_mane_url.append('no_url')
+                                hi_or_ts_gene_mane_url.append("no_url")
                         else:
-                            hi_or_ts_gene_mane_url.append('no_url')
+                            hi_or_ts_gene_mane_url.append("no_url")
                     else:
-                        hi_or_ts_gene_mane_url.append('no_url')
+                        hi_or_ts_gene_mane_url.append("no_url")
                     break
 
         return hi_or_ts_gene_mane_url
@@ -494,7 +490,7 @@ class Annotation:
         if self.cnv.is_duplication:
             return [cnv for cnv in cnvs if self.cnv.matches_cnv_type_or_both(cnv["cnv_type"])]
         else:
-            return cnvs  # TODO does not make any sense?
+            return cnvs  # NOTE: loss is compared with all - as given by ACMG guidelines
 
     def get_gene_transcript_regions(self, gene_name: str) -> list[TranscriptRegion]:
         """
