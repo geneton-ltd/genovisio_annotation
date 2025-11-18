@@ -24,6 +24,16 @@ class AnnotatedGenesList(TypedDict):
     associated_with_disease_urls: list[str]
 
 
+class GeneSummary(TypedDict):
+    identifier: str
+    name: str
+    gene_type: str
+    contained: bool
+    omim_url: str | None
+    is_morbid: bool
+    is_disease_associated: bool
+
+
 class RegulatoryTypesCounter(TypedDict):
     enhancer: int
     promoter: int
@@ -266,6 +276,44 @@ class Annotation:
                     url_value = gene.get("external", {}).get("OMIM", {}).get("url", constants.UNKNOWN_URL)
                     annot_genes["associated_with_disease_urls"].append(url_value)
         return annot_genes
+
+    def get_genes_summary(self) -> list[GeneSummary]:
+        """
+        Get summary of all genes in the CNV region
+
+        Returns
+        -------
+        list[GeneSummary]
+            List of gene summaries - dictionaries with keys:
+            'identifier', 'name', 'gene_type', 'contained', 'omim_url', 'is_morbid', 'is_disease_associated'
+        """
+        genes = self.get_genes()
+        genes_summary: list[GeneSummary] = []
+
+        for gene in genes:
+            is_morbid = False
+            is_disease_associated = False
+
+            if "AnnotSV" in gene:
+                if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
+                    is_morbid = True
+
+                if "omim_phenotype" in gene["AnnotSV"]:
+                    is_disease_associated = True
+
+            genes_summary.append(
+                {
+                    "identifier": gene["gene_id"],
+                    "name": gene["gene_name"],
+                    "gene_type": gene["gene_type"],
+                    "omim_url": gene.get("external", {}).get("OMIM", {}).get("url", None),
+                    "contained": self.cnv.is_overlapping(gene["start"], gene["end"], enums.Overlap.CONTAINED_INSIDE),
+                    "is_morbid": is_morbid,
+                    "is_disease_associated": is_disease_associated,
+                }
+            )
+
+        return genes_summary
 
     def get_triplosensitivity_regions(
         self, overlap_type: enums.Overlap, valid_scores: list[int]

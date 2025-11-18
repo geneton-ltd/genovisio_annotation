@@ -14,7 +14,7 @@ def test_genes_annotSV():
 
     genes = annot.get_annotated_genes()
 
-    print('morbid_genes_urls: ', genes["morbid_genes_urls"])
+    print("morbid_genes_urls: ", genes["morbid_genes_urls"])
     assert genes["morbid_genes"] == ["test2"]
     assert genes["morbid_genes_urls"] == ["https://www.omim.org/entry/test2"]
     print(genes["associated_with_disease_urls"])
@@ -31,6 +31,38 @@ def test_get_genes():
 
     genes = annot.get_genes(overlap=annotation.enums.Overlap.CONTAINED_INSIDE)
     assert len(genes) == 2
+
+
+def test_get_gene_summary():
+    annot = annotation.Annotation.load_from_json("tests/data/genes.json")
+
+    gene_summaries = annot.get_genes_summary()
+
+    assert len(gene_summaries) == 3
+
+    gene1 = next(g for g in gene_summaries if g["identifier"] == "gene1")
+    assert gene1["name"] == "test1"
+    assert gene1["gene_type"] == "transcribed_unprocessed_pseudogene"
+    assert gene1["omim_url"] is None
+    assert gene1["contained"] is False
+    assert not gene1["is_morbid"]
+    assert gene1["is_disease_associated"]
+
+    gene2 = next(g for g in gene_summaries if g["identifier"] == "gene2")
+    assert gene2["name"] == "test2"
+    assert gene2["gene_type"] == "lncRNA"
+    assert gene2["omim_url"] == "https://www.omim.org/entry/test2"
+    assert gene2["contained"] is True
+    assert gene2["is_morbid"]
+    assert gene2["is_disease_associated"]
+
+    gene3 = next(g for g in gene_summaries if g["identifier"] == "gene3")
+    assert gene3["name"] == "test3"
+    assert gene3["gene_type"] == "protein_coding"
+    assert gene3["omim_url"] == "https://www.omim.org/entry/test3"
+    assert not gene3["is_morbid"]
+    assert not gene3["is_disease_associated"]
+    assert gene3["contained"] is True
 
 
 def test_count_genes():
@@ -59,6 +91,7 @@ def test_hi_genes():
 
     assert annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [3]) == ["test3"]
 
+
 def test_hi_genes_urls():
     annot = annotation.Annotation.load_from_json("tests/data/higenes.json")
 
@@ -68,11 +101,11 @@ def test_hi_genes_urls():
     assert hi_genes_urls == ["https://www.omim.org/entry/test2", "https://www.omim.org/entry/test3"]
 
     get_hi_genes_names = annot.get_haploinsufficient_gene_names(annotation.enums.Overlap.ANY, [1])
-    print('get_hi_genes_names: ', get_hi_genes_names)
+    print("get_hi_genes_names: ", get_hi_genes_names)
     hi_genes_urls = annot.get_hi_or_ts_genes_url(get_hi_genes_names)
-    print('hi_genes_urls: ', hi_genes_urls)
+    print("hi_genes_urls: ", hi_genes_urls)
 
-    assert hi_genes_urls == ['no_url']
+    assert hi_genes_urls == ["no_url"]
 
 
 def test_ts_genes_urls():
@@ -84,10 +117,10 @@ def test_ts_genes_urls():
     assert hi_genes_urls == ["https://www.omim.org/entry/test2", "https://www.omim.org/entry/test3"]
 
     get_hi_genes_names = annot.get_triplosensitivity_gene_names(annotation.enums.Overlap.ANY, [1])
-    print('get_hi_genes_names: ', get_hi_genes_names)
+    print("get_hi_genes_names: ", get_hi_genes_names)
     hi_genes_urls = annot.get_hi_or_ts_genes_url(get_hi_genes_names)
 
-    assert hi_genes_urls == ['no_url']
+    assert hi_genes_urls == ["no_url"]
 
 
 def test_hi_regions():
