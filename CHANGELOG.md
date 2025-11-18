@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.3.1...v0.4.0) (2025-11-18)
+
+
+### Features
+
+* added gene summary ([d2b1892](https://github.com/geneton-ltd/genovisio_annotation/commit/d2b189237670f56583e3bde31102c4575976390d))
+* added gene summary ([4bf3200](https://github.com/geneton-ltd/genovisio_annotation/commit/4bf3200359437437c724a5b5de8f9fd27230fa5e))
+
 ## [0.3.1](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.3.0...v0.3.1) (2025-06-23)
 
 
