@@ -59,7 +59,7 @@ def test_get_gene_summary():
     gene3 = next(g for g in gene_summaries if g["identifier"] == "gene3")
     assert gene3["name"] == "test3"
     assert gene3["gene_type"] == "protein_coding"
-    assert gene3["omim_url"] == "https://www.omim.org/entry/test3"
+    assert gene3["omim_url"] is None
     assert not gene3["is_morbid"]
     assert not gene3["is_disease_associated"]
     assert gene3["contained"] is True
