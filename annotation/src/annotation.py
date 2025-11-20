@@ -293,6 +293,7 @@ class Annotation:
         for gene in genes:
             is_morbid = False
             is_disease_associated = False
+            omim_url = None
 
             if "AnnotSV" in gene:
                 if gene["AnnotSV"].get("omim_morbid_gene", "") == "yes":
@@ -301,12 +302,15 @@ class Annotation:
                 if "omim_phenotype" in gene["AnnotSV"]:
                     is_disease_associated = True
 
+                if is_morbid or is_disease_associated:
+                    omim_url = gene.get("external", {}).get("OMIM", {}).get("url", None)
+
             genes_summary.append(
                 {
                     "identifier": gene["gene_id"],
                     "name": gene["gene_name"],
                     "gene_type": gene["gene_type"],
-                    "omim_url": gene.get("external", {}).get("OMIM", {}).get("url", None),
+                    "omim_url": omim_url,
                     "contained": self.cnv.is_overlapping(gene["start"], gene["end"], enums.Overlap.CONTAINED_INSIDE),
                     "is_morbid": is_morbid,
                     "is_disease_associated": is_disease_associated,
