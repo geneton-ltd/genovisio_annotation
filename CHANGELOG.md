@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.1](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.4.0...v0.4.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* fixed security alerts ([7d3c241](https://github.com/geneton-ltd/genovisio_annotation/commit/7d3c241e34c8f6a0aa9aae565e206b468d7870ea))
+* omim url not added when not morbid or phenotype ([a555f99](https://github.com/geneton-ltd/genovisio_annotation/commit/a555f99b7c7fef18d1da71224c88d704d4497565))
+* omim url not added when not morbid or phenotype ([c726f42](https://github.com/geneton-ltd/genovisio_annotation/commit/c726f42403d40b30f03f854818665078161c1e38))
+
 ## [0.4.0](https://github.com/geneton-ltd/genovisio_annotation/compare/v0.3.1...v0.4.0) (2025-11-18)
 
 
